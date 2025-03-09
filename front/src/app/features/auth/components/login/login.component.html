@@ -1,0 +1,28 @@
+<div class="login-page">
+    <div class="header">
+      <div class="logo-container">
+        <img src="/assets/logo_p6.png" alt="logo" class="logo" />
+      </div>
+      <button class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </div>
+    
+    <div class="content">
+      <h1>Se connecter</h1>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-field">
+          <label for="email">E-mail ou nom d'utilisateur</label>
+          <input id="email" type="text" formControlName="email">
+        </div>
+        
+        <div class="form-field">
+          <label for="password">Mot de passe</label>
+          <input id="password" type="password" formControlName="password">
+        </div>
+        
+        <button type="submit" class="submit-button" [disabled]="!loginForm.valid">Se connecter</button>
+      </form>
+    </div>
+  </div>
