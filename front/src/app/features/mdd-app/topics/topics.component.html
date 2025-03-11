@@ -1,0 +1,47 @@
+<div class="topics-page">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-container">
+        <img src="/assets/logo_p6.png" alt="logo" class="logo" />
+      </div>
+      <div class="header-actions">
+        <button class="create-button" (click)="onCreateTopic()">
+          Créer un article
+        </button>
+        <div class="sort-container">
+          Trier par
+          <button mat-icon-button [matMenuTriggerFor]="sortMenu">
+            <mat-icon>sort</mat-icon>
+          </button>
+          <mat-menu #sortMenu="matMenu">
+            <button mat-menu-item (click)="sortTopics('date')">Date</button>
+            <button mat-menu-item (click)="sortTopics('title')">Titre</button>
+            <button mat-menu-item (click)="sortTopics('author')">Auteur</button>
+          </mat-menu>
+        </div>
+        <div class="user-menu">
+          <button mat-icon-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #userMenu="matMenu">
+            <button mat-menu-item (click)="onLogout()">
+              <mat-icon>logout</mat-icon>
+              <span>Se déconnecter</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </header>
+  
+    <!-- Topics Grid -->
+    <div class="topics-grid">
+      <div class="topic-card" *ngFor="let topic of topics">
+        <h2>{{ topic.title }}</h2>
+        <div class="topic-meta">
+          <span class="date">{{ topic.date | date }}</span>
+          <span class="author">{{ topic.author }}</span>
+        </div>
+        <p class="topic-content">{{ topic.content }}</p>
+      </div>
+    </div>
+  </div>

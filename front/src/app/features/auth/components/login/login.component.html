@@ -1,28 +1,62 @@
 <div class="login-page">
-    <div class="header">
+  <div class="header">
       <div class="logo-container">
-        <img src="/assets/logo_p6.png" alt="logo" class="logo" />
+          <img src="/assets/logo_p6.png" alt="logo" class="logo" />
       </div>
       <button class="back-button" (click)="goBack()">
-        <mat-icon>arrow_back</mat-icon>
+          <mat-icon>arrow_back</mat-icon>
       </button>
-    </div>
-    
-    <div class="content">
-      <h1>Se connecter</h1>
-      
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-field">
-          <label for="email">E-mail ou nom d'utilisateur</label>
-          <input id="email" type="text" formControlName="email">
-        </div>
-        
-        <div class="form-field">
-          <label for="password">Mot de passe</label>
-          <input id="password" type="password" formControlName="password">
-        </div>
-        
-        <button type="submit" class="submit-button" [disabled]="!loginForm.valid">Se connecter</button>
-      </form>
-    </div>
   </div>
+
+  <div class="content">
+      <h1>Se connecter</h1>
+
+      <!-- Message de succès -->
+      <div *ngIf="successMessage" class="success-message">
+          {{ successMessage }}
+      </div>
+
+      <!-- Message d'erreur -->
+      <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-field">
+              <label for="username">E-mail ou nom d'utilisateur</label>
+              <input 
+                  id="username" 
+                  type="text" 
+                  formControlName="username"
+                  [class.error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+              >
+              <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error-text">
+                  Ce champ est requis
+              </div>
+          </div>
+
+          <div class="form-field">
+              <label for="password">Mot de passe</label>
+              <input 
+                  id="password" 
+                  type="password" 
+                  formControlName="password"
+                  [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+              >
+              <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-text">
+                  Ce champ est requis
+              </div>
+          </div>
+
+          <button 
+              type="submit" 
+              class="submit-button" 
+              [disabled]="!loginForm.valid || isLoading"
+          >
+              <span *ngIf="!isLoading">Se connecter</span>
+              <span *ngIf="isLoading">Chargement...</span>
+          </button>
+
+      </form>
+  </div>
+</div>
