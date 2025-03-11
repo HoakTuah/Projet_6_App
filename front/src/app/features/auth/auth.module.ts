@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { MessageService } from './services/message.service';
 import { HttpClientModule } from '@angular/common/http';
 
 // Angular Material imports
@@ -38,5 +39,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     RegisterComponent
   ],
+  providers: [
+    MessageService
+  ]
 })
 export class AuthModule { }

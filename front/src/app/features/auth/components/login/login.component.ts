@@ -1,24 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit , OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginRequest } from '../../interfaces/LoginRequest.Interface';
+import { Subscription } from 'rxjs';
+import { MessageService } from '../../services/message.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
+
   loginForm: FormGroup;
   errorMessage: string = '';
-  isLoading: boolean = false;
   successMessage: string = '';
+  isLoading: boolean = false;
+  private messageSubscription: Subscription | undefined;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private messageService: MessageService
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -27,14 +33,32 @@ export class LoginComponent {
   }
 
   ngOnInit() {
-    // Récupérer les paramètres de l'URL
+    // S'abonner au MessageService
+    this.messageSubscription = this.messageService.currentMessage.subscribe(message => {
+      console.log('Message reçu dans login:', message); // Pour déboguer
+      if (message) {
+        this.successMessage = message;
+        // Optionnel : effacer le message après quelques secondes
+        setTimeout(() => {
+          this.successMessage = '';
+          this.messageService.clearMessage();}, 3000);
+      }
+    });
+  
+    // Garder aussi la logique existante pour les paramètres d'URL
     this.route.queryParams.subscribe(params => {
       if (params['registered'] === 'true') {
         this.successMessage = params['message'] || 'Inscription réussie !';
       }
     });
   }
-  
+
+  ngOnDestroy() {
+    // Se désabonner pour éviter les fuites de mémoire
+    if (this.messageSubscription) {
+        this.messageSubscription.unsubscribe();
+    }
+}
 
   onSubmit() {
     if (this.loginForm.valid) {

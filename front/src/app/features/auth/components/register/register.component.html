@@ -10,22 +10,46 @@
     
     <div class="content">
       <h1>Inscription</h1>
+
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
       
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-field">
           <label for="username">Nom d'utilisateur</label>
-          <input id="username" type="text" formControlName="username">
-          
+          <input 
+            id="username" 
+            type="text" 
+            formControlName="username"
+            [class.invalid-input]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+          <div class="error-text" *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+            Champ invalide
+          </div>
         </div>
         
         <div class="form-field">
           <label for="email">Adresse e-mail</label>
-          <input id="email" type="email" formControlName="email">
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email"
+            [class.invalid-input]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+          <div class="error-text" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            Champ invalide
+          </div>
         </div>
         
         <div class="form-field">
           <label for="password">Mot de passe</label>
-          <input id="password" type="password" formControlName="password">
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password"
+            [class.invalid-input]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+          <div class="error-text" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            Champ invalide
+          </div>
         </div>
         
         <button type="submit" class="submit-button" [disabled]="!registerForm.valid">S'inscrire</button>

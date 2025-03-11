@@ -57,8 +57,22 @@
         border-radius: 4px;
         font-size: 16px;
         box-sizing: border-box;
+        transition: border-color 0.3s ease;
+        
+        &.invalid-input {
+          border-color: #dc3545;
+          background-color: #fff8f8;
+        }
+      }
+    
+      .error-text {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+        animation: fadeIn 0.3s ease-in;
       }
     }
+    
     
     .submit-button {
       width: 100%;
