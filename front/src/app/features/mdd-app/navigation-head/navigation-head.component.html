@@ -6,8 +6,8 @@
       </div>
       <div class="nav-links">
         <a class="logout-link" (click)="onLogout()">Se déconnecter</a>
-        <a routerLink="/articles" class="nav-link">Articles</a>
-        <a routerLink="/themes" class="nav-link">Thèmes</a>
+        <a routerLink="articles" routerLinkActive="active">Articles</a>
+        <a routerLink="themes" routerLinkActive="active">Thèmes</a>
       </div>
       <div class="user-icon">
         <mat-icon class="large-icon">account_circle</mat-icon>
@@ -32,8 +32,8 @@
     <div class="menu-content">
       <div class="menu-items">
         <a class="menu-item logout-link" (click)="onLogout()">Se déconnecter</a>
-        <a class="menu-item" routerLink="/articles">Articles</a>
-        <a class="menu-item" routerLink="/themes">Thèmes</a>
+        <a routerLink="articles" routerLinkActive="active" (click)="closeMenu()">Articles</a>
+        <a routerLink="themes" routerLinkActive="active" (click)="closeMenu()">Thèmes</a>
       </div>
       <div class="user-icon">
         <mat-icon class="large-icon">account_circle</mat-icon>

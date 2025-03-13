@@ -8,6 +8,7 @@ import { MddAppComponent } from './mdd-app.component';
 import { NavigationHeadComponent } from './navigation-head/navigation-head.component';
 import { PostComponent } from './post/post.component';
 import { MddAppRoutingModule } from './mdd-app-routing.module';
+import { TopicComponent } from './topic/topic.component';
 
 // Material Modules
 import { MatIconModule } from '@angular/material/icon';
@@ -15,11 +16,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 
+
+
 @NgModule({
   declarations: [
     MddAppComponent,
     NavigationHeadComponent,
-    PostComponent
+    PostComponent,
+    TopicComponent,
   ],
   imports: [
     CommonModule,

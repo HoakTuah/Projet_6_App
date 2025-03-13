@@ -13,7 +13,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule) 
   },
   { 
-    path: 'topics', 
+    path: 'MDD', 
     loadChildren: () => import('./features/mdd-app/mdd-app.module').then(m => m.MddAppModule),
     canActivate: [AuthGuard]
   },

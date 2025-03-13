@@ -28,4 +28,7 @@ export class NavigationHeadComponent {
       document.body.style.overflow = 'auto';
     }
   }
+  closeMenu() {
+    this.isMenuOpen = false;
+  }
 }

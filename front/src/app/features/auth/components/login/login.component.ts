@@ -80,8 +80,8 @@ export class LoginComponent implements OnInit, OnDestroy {
               email: response.email
             }));
             
-            // Rediriger vers la page d'accueil ou le tableau de bord
-            this.router.navigate(['/topics']);
+            // Rediriger vers la page d'accueil
+            this.router.navigate(['/MDD/articles']);
           } else {
             this.errorMessage = response.message || 'Erreur de connexion';
           }

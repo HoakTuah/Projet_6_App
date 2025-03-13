@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { RegisterRequest, RegisterResponse } from '../interfaces/RegisterRequest.Interface';
 import { LoginRequest, LoginResponse } from '../interfaces/LoginRequest.Interface';
 import { environment } from '../../../../environments/environment';
@@ -20,7 +20,13 @@ export class AuthService {
   }
 
   login(loginData: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/api/auth/login`, loginData);
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/auth/login`, loginData).pipe(
+      tap(response => {
+        if (response.success) {
+          this.router.navigate(['/MDD/articles']);
+        }
+      })
+    );
   }
 
   logout(): void {

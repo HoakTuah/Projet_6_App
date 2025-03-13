@@ -2,6 +2,11 @@
     display: block;
     width: 100%;
   }
+  a {
+    text-decoration: none !important;
+}
+
+  
   
   // Navigation desktop
   .desktop-nav {
@@ -71,6 +76,24 @@
       display: none;
     }
   }
+
+    .nav-links {
+    a {
+      &.active {
+        color: #9747FF !important; 
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .menu-items {
+    .menu-item {
+      &.active {
+        color: #9747FF !important;
+        font-weight: 500;
+      }
+    }
+  }
   
   // Navigation mobile
   .mobile-nav {
@@ -132,14 +155,16 @@
     .menu-items {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-  
-      .menu-item {
-        text-decoration: none;
+
+      a {
+        display: block;
+        padding: 15px 20px;
         color: #333;
-        font-size: 16px;
-        padding: 8px 0;
         text-align: right;
+        
+        &.active {
+            color: #9747FF;
+        }
   
         &.logout-link {
           color: red;
@@ -179,3 +204,6 @@
       visibility: visible;
     }
   }
+
+
+
