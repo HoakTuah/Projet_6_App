@@ -1,0 +1,46 @@
+<!-- Vue desktop -->
+<nav class="nav-bar desktop-nav">
+    <div class="nav-content">
+      <div class="nav-logo">
+        <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
+      </div>
+      <div class="nav-links">
+        <a class="logout-link" (click)="onLogout()">Se déconnecter</a>
+        <a routerLink="/articles" class="nav-link">Articles</a>
+        <a routerLink="/themes" class="nav-link">Thèmes</a>
+      </div>
+      <div class="user-icon">
+        <mat-icon class="large-icon">account_circle</mat-icon>
+      </div>
+    </div>
+  </nav>
+  
+  
+<!-- Vue mobile avec uniquement l'icône menu -->
+<nav class="mobile-nav">
+    <div class="nav-logo">
+      <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
+    </div>
+    <div class="mobile-menu-icon" (click)="toggleMenu()">
+      <mat-icon>menu</mat-icon>
+    </div>
+  </nav>
+
+  
+<!-- Menu latéral coulissant -->
+<div class="side-menu" [class.open]="isMenuOpen">
+    <div class="menu-content">
+      <div class="menu-items">
+        <a class="menu-item logout-link" (click)="onLogout()">Se déconnecter</a>
+        <a class="menu-item" routerLink="/articles">Articles</a>
+        <a class="menu-item" routerLink="/themes">Thèmes</a>
+      </div>
+      <div class="user-icon">
+        <mat-icon class="large-icon">account_circle</mat-icon>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Overlay sombre quand le menu est ouvert -->
+  <div class="menu-overlay" [class.visible]="isMenuOpen" (click)="toggleMenu()"></div>
+  

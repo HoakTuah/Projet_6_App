@@ -1,0 +1,13 @@
+.mdd-app-container {
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+  
+    // Ajout d'un padding-top pour compenser la hauteur de la navigation fixe
+    padding-top: 60px; // Hauteur de la barre de navigation
+  
+    @media (max-width: 768px) {
+      padding-top: 60px; // Même hauteur pour mobile
+    }
+  }

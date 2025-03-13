@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TopicsComponent } from './topics/topics.component';
+import { MddAppComponent } from './mdd-app.component';
+import { PostComponent} from './post/post.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: TopicsComponent
+    component: MddAppComponent,
+    children: [
+      { path: '', component: PostComponent }
+    ]
   }
-  // Vous pouvez ajouter d'autres routes ici
-  // { path: 'create', component: CreateTopicComponent },
-  // { path: ':id', component: TopicDetailComponent }
+
 ];
 
 @NgModule({
