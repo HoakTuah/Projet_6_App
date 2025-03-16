@@ -4,6 +4,8 @@ import com.openclassrooms.mddapi.dto.LoginRequest;
 import com.openclassrooms.mddapi.dto.LoginResponse;
 import com.openclassrooms.mddapi.dto.RegisterRequest;
 import com.openclassrooms.mddapi.dto.RegisterResponse;
+import com.openclassrooms.mddapi.dto.UpdateProfileRequest;
+import com.openclassrooms.mddapi.dto.UpdateProfileResponse;
 import com.openclassrooms.mddapi.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,10 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for handling authentication-related requests.
@@ -97,5 +96,38 @@ public class AuthController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    /**
+     * Handles user profile update requests.
+     * Updates a user's profile information based on the provided data.
+     * 
+     * @param userId        The ID of the user to update
+     * @param updateRequest DTO containing the fields to update
+     * @return ResponseEntity with update result and appropriate HTTP status code
+     */
+    @Operation(summary = "Update user profile", description = "Update a user's profile information (username, email, password)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Profile successfully updated", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Update failed", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class)))
+    })
+
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UpdateProfileResponse> updateProfile(
+            @PathVariable Integer userId,
+            @RequestBody UpdateProfileRequest updateRequest) {
+
+        UpdateProfileResponse response = userService.updateProfile(userId, updateRequest);
+
+        if (!response.isSuccess()) {
+            if (response.getMessage().equals("User not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }
+
+        return ResponseEntity.ok(response);
     }
 }
