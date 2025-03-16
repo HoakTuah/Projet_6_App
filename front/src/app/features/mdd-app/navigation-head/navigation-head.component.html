@@ -10,7 +10,7 @@
         <a routerLink="themes" routerLinkActive="active">Thèmes</a>
       </div>
       <div class="user-icon">
-        <mat-icon class="large-icon">account_circle</mat-icon>
+        <mat-icon class="large-icon" (click)="navigateToProfile()">account_circle</mat-icon>
       </div>
     </div>
   </nav>
@@ -36,7 +36,7 @@
         <a routerLink="themes" routerLinkActive="active" (click)="closeMenu()">Thèmes</a>
       </div>
       <div class="user-icon">
-        <mat-icon class="large-icon">account_circle</mat-icon>
+        <mat-icon class="large-icon" (click)="navigateToProfile()">account_circle</mat-icon>
       </div>
     </div>
   </div>

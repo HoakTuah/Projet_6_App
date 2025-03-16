@@ -31,4 +31,12 @@ export class NavigationHeadComponent {
   closeMenu() {
     this.isMenuOpen = false;
   }
+
+  navigateToProfile() {
+    this.router.navigate(['/MDD/profile']);
+    // If the menu is open, close it
+    if (this.isMenuOpen) {
+      this.closeMenu();
+    }
+  }
 }

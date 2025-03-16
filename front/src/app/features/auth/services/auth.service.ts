@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import { RegisterRequest, RegisterResponse } from '../interfaces/RegisterRequest.Interface';
+import { RegisterRequest, RegisterResponse, User } from '../interfaces/RegisterRequest.Interface';
 import { LoginRequest, LoginResponse } from '../interfaces/LoginRequest.Interface';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
@@ -45,5 +45,16 @@ export class AuthService {
     return !!localStorage.getItem('user');
   }
 
-
+  getCurrentUser(): User | null {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        return JSON.parse(userStr) as User;
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+        return null;
+      }
+    }
+    return null;
+  }
 }

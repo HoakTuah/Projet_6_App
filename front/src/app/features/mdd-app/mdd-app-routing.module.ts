@@ -5,6 +5,8 @@ import { PostComponent } from './post/post.component';
 import { TopicComponent } from './topic/topic.component';
 import { PostDetailComponent } from './post-detail/post-detail.component';
 import { PostCreateComponent } from './post-create/post-create.component';
+import { ProfileComponent } from './profile/profile.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -14,6 +16,7 @@ const routes: Routes = [
       { path: 'articles/create', component: PostCreateComponent },
       { path: 'articles/:id', component: PostDetailComponent },
       { path: 'themes', component: TopicComponent },
+      { path: 'profile', component: ProfileComponent },
       { path: '', redirectTo: 'articles', pathMatch: 'full' }
     ]
   }
