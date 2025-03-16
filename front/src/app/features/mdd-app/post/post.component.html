@@ -1,7 +1,7 @@
 <!-- Contenu principal -->
 <div class="main-content">
   <div class="actions-container">
-    <button class="create-button">
+    <button class="create-button" (click)="$event.stopPropagation(); onCreatePost()">
       Créer un article
     </button>
 
@@ -19,7 +19,7 @@
   </div>
 
   <div class="posts-grid">
-    <div class="post-card" *ngFor="let post of posts">
+    <div class="post-card" *ngFor="let post of posts" (click)="onPostClick(post.id)">
       <h2>{{ post.title }}</h2>
       <div class="post-meta">
         <span class="date">{{ post.date | date }}</span>
@@ -27,4 +27,4 @@
       </div>
       <p class="post-content">{{ post.content }}</p>
     </div>
-  </div>
+</div>

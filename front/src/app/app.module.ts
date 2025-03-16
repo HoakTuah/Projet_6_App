@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthModule } from './features/auth/auth.module';
+
 @NgModule({
   declarations: [AppComponent, HomeComponent],
   imports: [

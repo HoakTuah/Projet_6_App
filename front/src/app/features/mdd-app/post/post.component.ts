@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
+import { Post } from '../interfaces/PostRequest.Interface';
+import { PostService } from '../services/post.service';
 
-
-interface Post {
-  title: string;
-  date: Date;  // Changé de string à Date
-  author: string;
-  content: string;
-  isSubscribed: boolean;
-}
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
@@ -20,28 +14,32 @@ interface Post {
   isMenuOpen = false;
   posts: Post[] = [
     {
-      title: "Titre de l'article",
+      id: 1,
+      title: "Titre de l'article 1 ",
       date: new Date("2024-03-08"), 
       author: "Auteur",
       content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
       isSubscribed: false
     },
     {
-      title: "Titre de l'article",
+      id: 2,
+      title: "Titre de l'article 2 ",
       date: new Date("2024-03-08"),
       author: "Auteur",
       content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
       isSubscribed: false
     },
     {
-      title: "Titre de l'article",
+      id: 3,
+      title: "Titre de l'article 3 ",
       date: new Date("2024-03-08"),
       author: "Auteur",
       content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
       isSubscribed: false
     },
     {
-      title: "Titre de l'article",
+      id: 4,
+      title: "Titre de l'article 4 ",
       date: new Date("2024-03-08"),
       author: "Auteur",
       content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
@@ -54,6 +52,7 @@ interface Post {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
 
@@ -63,7 +62,7 @@ interface Post {
 
   onCreatePost() {
     // Navigation vers la page de création
-    this.router.navigate(['/post/create']);
+    this.router.navigate(['create'], { relativeTo: this.route });
   }
 
   onLogout() {
@@ -98,5 +97,10 @@ interface Post {
   toggleSubscription(post: Post): void {
     post.isSubscribed = !post.isSubscribed;
   }
+
+  onPostClick(postId: number): void {
+    this.router.navigate(['../articles', postId], { relativeTo: this.route });
+  }
+
 
 }
