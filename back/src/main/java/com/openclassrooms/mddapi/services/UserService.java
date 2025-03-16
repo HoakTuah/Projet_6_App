@@ -12,15 +12,39 @@ import java.time.LocalDateTime;
 
 import java.util.Optional;
 
+/**
+ * Service class that handles user-related operations.
+ * Provides functionality for user authentication and registration.
+ * 
+ * @author Herry Khoalinh
+ * @version 1.0
+ * @since 1.0
+ */
+
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Constructs a UserService with the required repository.
+     * 
+     * @param userRepository Repository for accessing user data
+     */
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    /**
+     * Authenticates a user based on username/email and password.
+     * Determines whether the provided identifier is an email or username
+     * and searches the database accordingly.
+     * 
+     * @param loginRequest DTO containing login credentials
+     * @return LoginResponse with authentication result and user information if
+     *         successful
+     */
 
     public LoginResponse login(LoginRequest loginRequest) {
         // Check if the input is an email or username
@@ -60,6 +84,16 @@ public class UserService {
                     false);
         }
     }
+
+    /**
+     * Registers a new user in the system.
+     * Validates that the username and email are not already in use
+     * before creating the new user account.
+     * 
+     * @param registerRequest DTO containing registration information
+     * @return RegisterResponse with registration result and user information if
+     *         successful
+     */
 
     public RegisterResponse register(RegisterRequest registerRequest) {
         // Check if username already exists

@@ -10,32 +10,49 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Configuration class for Swagger/OpenAPI documentation.
+ * Sets up the OpenAPI specification for the API documentation.
+ * 
+ * @author Herry Khoalinh
+ * @version 1.0
+ * @since 1.0
+ */
+
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public OpenAPI myOpenAPI() {
-        Server devServer = new Server();
-        devServer.setUrl("http://localhost:8080");
-        devServer.setDescription("Server URL in Development environment");
+        /**
+         * Creates and configures an OpenAPI bean for API documentation.
+         * Defines metadata such as API title, version, contact information,
+         * license, and server URLs.
+         * 
+         * @return A configured OpenAPI instance
+         */
 
-        Contact contact = new Contact();
-        contact.setName("MDD API Support");
-        contact.setEmail("support@mddapi.com");
+        @Bean
+        public OpenAPI myOpenAPI() {
+                Server devServer = new Server();
+                devServer.setUrl("http://localhost:8080");
+                devServer.setDescription("Server URL in Development environment");
 
-        License mitLicense = new License()
-                .name("MIT License")
-                .url("https://choosealicense.com/licenses/mit/");
+                Contact contact = new Contact();
+                contact.setName("MDD API Support");
+                contact.setEmail("support@mddapi.com");
 
-        Info info = new Info()
-                .title("MDD API Documentation")
-                .version("1.0")
-                .contact(contact)
-                .description("This API exposes endpoints for the MDD application.")
-                .license(mitLicense);
+                License mitLicense = new License()
+                                .name("MIT License")
+                                .url("https://choosealicense.com/licenses/mit/");
 
-        return new OpenAPI()
-                .info(info)
-                .servers(List.of(devServer));
-    }
+                Info info = new Info()
+                                .title("MDD API Documentation")
+                                .version("1.0")
+                                .contact(contact)
+                                .description("This API exposes endpoints for the MDD application.")
+                                .license(mitLicense);
+
+                return new OpenAPI()
+                                .info(info)
+                                .servers(List.of(devServer));
+        }
 }
