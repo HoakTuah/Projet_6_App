@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { MessageService } from './services/message.service';
 import { HttpClientModule } from '@angular/common/http';
+import { ProfileService } from '../mdd-app/services/profile.service';
 
 // Angular Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -40,7 +41,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     RegisterComponent
   ],
   providers: [
-    MessageService
+    MessageService,
+    ProfileService
   ]
 })
 export class AuthModule { }

@@ -12,6 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
+
 // Composants
 import { MddAppComponent } from './mdd-app.component';
 import { NavigationHeadComponent } from './navigation-head/navigation-head.component';
@@ -37,6 +38,7 @@ import { ProfileComponent } from './profile/profile.component';
     CommonModule,
     FormsModule,
     RouterModule,
+    ReactiveFormsModule,
     MddAppRoutingModule,
     MatIconModule,
     MatButtonModule,

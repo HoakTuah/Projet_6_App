@@ -1,29 +1,60 @@
 <div class="profile-container">
-    <h1 class="profile-title">Profil utilisateur</h1>
+  <h1 class="profile-title">Profil utilisateur</h1>
+  
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+  
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+    <input 
+      type="text" 
+      formControlName="username" 
+      placeholder="Username"
+      [class.invalid-input]="profileForm.get('username')?.invalid && profileForm.get('username')?.touched">
+    <div class="error-text" *ngIf="profileForm.get('username')?.hasError('required') && profileForm.get('username')?.touched">
+      Le nom d'utilisateur est requis
+    </div>
     
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
-      <input type="text" formControlName="username" placeholder="Username">
-      <input type="email" formControlName="email" placeholder="email@email.fr">
-      <input type="password" formControlName="password" placeholder="Mot de passe">
-      
-      <button type="submit" class="save-button" [disabled]="!profileForm.valid">
-        Sauvegarder
-      </button>
-    </form>
+    <input 
+      type="email" 
+      formControlName="email" 
+      placeholder="email@email.fr"
+      [class.invalid-input]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+    <div class="error-text" *ngIf="profileForm.get('email')?.hasError('required') && profileForm.get('email')?.touched">
+      L'adresse e-mail est requise
+    </div>
+    <div class="error-text" *ngIf="profileForm.get('email')?.hasError('email') && profileForm.get('email')?.touched">
+      Veuillez entrer une adresse e-mail valide
+    </div>
     
-    <div class="divider"></div>
+    <input 
+      type="password" 
+      formControlName="password" 
+      placeholder="Mot de passe">
     
-    <div class="subscriptions-section">
-      <h2 class="section-title">Abonnements</h2>
-      
-      <div class="subscriptions-grid">
-        <div class="subscription-card" *ngFor="let subscription of subscriptions">
-          <h3>{{ subscription.title }}</h3>
-          <p>{{ subscription.description }}</p>
-          <button class="unsubscribe-button" (click)="unsubscribe(subscription.id)">
-            Se désabonner
-          </button>
-        </div>
+    <button type="submit" class="save-button" [disabled]="!profileForm.valid || isLoading">
+      <span *ngIf="!isLoading">Sauvegarder</span>
+      <span *ngIf="isLoading">Chargement...</span>
+    </button>
+  </form>
+  
+  <div class="divider"></div>
+  
+  <!-- <div class="subscriptions-section">
+    <h2 class="section-title">Abonnements</h2>
+    
+    <div class="subscriptions-grid">
+      <div class="subscription-card" *ngFor="let subscription of subscriptions">
+        <h3>{{ subscription.title }}</h3>
+        <p>{{ subscription.description }}</p>
+        <button class="unsubscribe-button" (click)="unsubscribe(subscription.id)">
+          Se désabonner
+        </button>
       </div>
     </div>
-  </div>
+  </div> -->
+</div>
