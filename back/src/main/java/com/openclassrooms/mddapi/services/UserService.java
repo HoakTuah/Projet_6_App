@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.openclassrooms.mddapi.Security.JwtService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final JwtService jwtService;
 
     /**
      * Constructs a UserService with required dependencies.
@@ -49,10 +51,12 @@ public class UserService implements UserDetailsService {
     public UserService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            UserMapper userMapper) {
+            UserMapper userMapper,
+            JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.jwtService = jwtService;
     }
 
     /**
@@ -103,17 +107,19 @@ public class UserService implements UserDetailsService {
                     // If match, update to BCrypt encoded password
                     user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
                     user = userRepository.save(user);
-                    return userMapper.toLoginResponse(user, "Login successful", true);
+                    String jwtToken = jwtService.generateToken(user);
+                    return userMapper.toLoginResponse(user, jwtToken, "Login successful", true);
                 }
             } else {
                 // If already BCrypt encoded, use matches
                 if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                    return userMapper.toLoginResponse(user, "Login successful", true);
+                    String jwtToken = jwtService.generateToken(user);
+                    return userMapper.toLoginResponse(user, jwtToken, "Login successful", true);
                 }
             }
-            return userMapper.toLoginResponse(null, "Invalid password", false);
+            return userMapper.toLoginResponse(null, null, "Invalid password", false);
         }
-        return userMapper.toLoginResponse(null, "User not found", false);
+        return userMapper.toLoginResponse(null, null, "User not found", false);
     }
 
     /**
@@ -127,12 +133,12 @@ public class UserService implements UserDetailsService {
     public RegisterResponse register(RegisterRequest registerRequest) {
         // Check if username already exists
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return userMapper.toRegisterResponse(null, "Username already exists", false);
+            return userMapper.toRegisterResponse(null, null, "Username already exists", false);
         }
 
         // Check if email already exists
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return userMapper.toRegisterResponse(null, "Email already exists", false);
+            return userMapper.toRegisterResponse(null, null, "Email already exists", false);
         }
 
         // Create new user with encoded password
@@ -143,7 +149,8 @@ public class UserService implements UserDetailsService {
         // Save user to database
         User savedUser = userRepository.save(newUser);
 
-        return userMapper.toRegisterResponse(savedUser, "Registration successful", true);
+        String jwtToken = jwtService.generateToken(savedUser);
+        return userMapper.toRegisterResponse(savedUser, jwtToken, "Registration successful", true);
     }
 
     /**

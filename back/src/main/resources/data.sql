@@ -23,7 +23,6 @@ CREATE TABLE topics (
 CREATE TABLE subscriptions (
     user_id INT,
     topic_id INT,
-    subscribed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, topic_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (topic_id) REFERENCES topics(id) ON DELETE CASCADE

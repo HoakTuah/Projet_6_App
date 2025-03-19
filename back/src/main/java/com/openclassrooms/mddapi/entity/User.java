@@ -2,165 +2,181 @@ package com.openclassrooms.mddapi.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity representing a user in the system.
  * Implements UserDetails for Spring Security integration.
  * Contains user authentication and profile information.
- *
- * @author Herry Khoalinh
- * @version 1.0
- * @since 1.0
+ * Manages topic subscriptions through a many-to-many relationship.
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@ToString(exclude = "subscribedTopics")
 @Schema(description = "User entity containing authentication and profile information")
 public class User implements UserDetails {
 
-    /**
-     * Unique identifier for the user.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique identifier of the user", example = "1")
     private Integer id;
 
-    /**
-     * User's email address.
-     * Must be unique in the system.
-     */
     @Column(unique = true)
     @Schema(description = "User's email address", example = "user@example.com")
     private String email;
 
-    /**
-     * User's chosen username.
-     * Must be unique in the system.
-     */
     @Column(unique = true)
     @Schema(description = "User's username", example = "johndoe")
     private String username;
 
-    /**
-     * User's encrypted password.
-     * Not exposed in API responses.
-     */
     @Schema(description = "User's encrypted password", hidden = true)
     private String password;
 
-    /**
-     * Timestamp when the user account was created.
-     */
     @Column(name = "created_at")
     @Schema(description = "Timestamp when the user was created", example = "2024-03-19T10:30:00")
     private LocalDateTime createdAt;
 
-    /**
-     * Returns the authorities granted to the user.
-     * All users have ROLE_USER authority by default.
-     *
-     * @return a list of granted authorities
-     */
+    @ManyToMany(mappedBy = "subscribers")
+    @Schema(description = "Topics that the user has subscribed to")
+    private Set<Topic> subscribedTopics = new HashSet<>();
+
+    // Custom equals and hashCode methods to prevent infinite recursion
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof User))
+            return false;
+        User user = (User) o;
+        return id != null && id.equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    // Helper methods for managing subscriptions
+    public void addSubscribedTopic(Topic topic) {
+        subscribedTopics.add(topic);
+        topic.getSubscribers().add(this);
+    }
+
+    public void removeSubscribedTopic(Topic topic) {
+        subscribedTopics.remove(topic);
+        topic.getSubscribers().remove(this);
+    }
+
+    // UserDetails implementation methods
     @Override
     @Schema(description = "User's authorities/roles", hidden = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
-    /**
-     * Returns the email address used for authentication.
-     * This method is used by Spring Security for authentication.
-     *
-     * @return the user's email address
-     */
     @Override
     @Schema(description = "User's email used for authentication")
     public String getUsername() {
-        return email;
+        return email; // Using email for authentication
     }
 
-    /**
-     * Returns the user's display username.
-     * This is the username shown in the application UI.
-     *
-     * @return the user's chosen username
-     */
     @Schema(description = "User's display username")
     public String getUsernameDisplay() {
         return username;
     }
 
-    /**
-     * Returns the user's encrypted password.
-     *
-     * @return the encrypted password
-     */
     @Override
     @Schema(hidden = true)
     public String getPassword() {
         return password;
     }
 
-    /**
-     * Indicates whether the user's account has expired.
-     * In this implementation, accounts never expire.
-     *
-     * @return true if the account is not expired
-     */
     @Override
     @Schema(hidden = true)
     public boolean isAccountNonExpired() {
         return true;
     }
 
-    /**
-     * Indicates whether the user is locked or not.
-     * In this implementation, accounts are never locked.
-     *
-     * @return true if the account is not locked
-     */
     @Override
     @Schema(hidden = true)
     public boolean isAccountNonLocked() {
         return true;
     }
 
-    /**
-     * Indicates whether the user's credentials have expired.
-     * In this implementation, credentials never expire.
-     *
-     * @return true if credentials are not expired
-     */
     @Override
     @Schema(hidden = true)
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
-    /**
-     * Indicates whether the user is enabled or disabled.
-     * In this implementation, all users are enabled by default.
-     *
-     * @return true if the user is enabled
-     */
     @Override
     @Schema(hidden = true)
     public boolean isEnabled() {
         return true;
+    }
+
+    // Constructors
+    public User() {
+        this.subscribedTopics = new HashSet<>();
+    }
+
+    // Builder pattern methods
+    public static UserBuilder builder() {
+        return new UserBuilder();
+    }
+
+    public static class UserBuilder {
+        private final User user;
+
+        public UserBuilder() {
+            user = new User();
+        }
+
+        public UserBuilder id(Integer id) {
+            user.setId(id);
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            user.setEmail(email);
+            return this;
+        }
+
+        public UserBuilder username(String username) {
+            user.setUsername(username);
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            user.setPassword(password);
+            return this;
+        }
+
+        public UserBuilder createdAt(LocalDateTime createdAt) {
+            user.setCreatedAt(createdAt);
+            return this;
+        }
+
+        public UserBuilder subscribedTopics(Set<Topic> subscribedTopics) {
+            user.setSubscribedTopics(subscribedTopics);
+            return this;
+        }
+
+        public User build() {
+            return user;
+        }
     }
 }

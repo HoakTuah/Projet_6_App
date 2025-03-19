@@ -1,42 +1,63 @@
 package com.openclassrooms.mddapi.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Entity representing a Topic in the system.
- * Topics contain a title, content, and creation timestamp.
- *
- * @author Herry Khoalinh
- * @version 1.0
- * @since 1.0
- */
 @Entity
 @Table(name = "topics")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Topic entity representing a discussion topic")
+@ToString(exclude = "subscribers") // Exclude from ToString
 public class Topic {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Unique identifier of the topic")
     private Integer id;
 
-    @Column(unique = true, nullable = false)
-    @Schema(description = "Title of the topic", required = true)
     private String title;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
-    @Schema(description = "Content of the topic", required = true)
     private String content;
-
-    @Column(name = "created_at")
-    @Schema(description = "Timestamp when the topic was created")
     private LocalDateTime createdAt;
+
+    @ManyToMany
+    @JoinTable(name = "subscriptions", joinColumns = @JoinColumn(name = "topic_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> subscribers = new HashSet<>();
+
+    // Custom equals and hashCode methods
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Topic))
+            return false;
+        Topic topic = (Topic) o;
+        return id != null && id.equals(topic.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    // Helper methods
+    public void addSubscription(User user) {
+        subscribers.add(user);
+        user.getSubscribedTopics().add(this);
+    }
+
+    public void removeSubscription(User user) {
+        subscribers.remove(user);
+        user.getSubscribedTopics().remove(this);
+    }
+
+    public boolean hasSubscription(User user) {
+        return subscribers.contains(user);
+    }
 }

@@ -2,6 +2,8 @@ package com.openclassrooms.mddapi.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.Set;
 
 /**
  * Data Transfer Object for login operation responses.
@@ -14,6 +16,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class LoginResponse {
 
     /**
@@ -32,6 +35,11 @@ public class LoginResponse {
     private String email;
 
     /**
+     * The JWT token for the authenticated user.
+     */
+    private String token;
+
+    /**
      * A message describing the result of the authentication attempt.
      * Examples: "Login successful", "Invalid password", "User not found"
      */
@@ -42,4 +50,9 @@ public class LoginResponse {
      * True if the user was authenticated, false otherwise.
      */
     private boolean success;
+
+    /**
+     * The list of subscribed topics for the authenticated user.
+     */
+    private Set<String> subscribedTopics;
 }

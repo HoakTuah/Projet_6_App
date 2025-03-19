@@ -2,6 +2,7 @@ package com.openclassrooms.mddapi.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Data Transfer Object for registration operation responses.
@@ -14,6 +15,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class RegisterResponse {
 
     /**
@@ -30,6 +32,11 @@ public class RegisterResponse {
      * The email address of the newly registered user.
      */
     private String email;
+
+    /**
+     * The JWT token for the newly registered user.
+     */
+    private String token;
 
     /**
      * A message describing the result of the registration attempt.

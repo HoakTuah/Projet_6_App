@@ -18,47 +18,52 @@ import java.time.LocalDateTime;
 @Mapper(componentModel = "spring", imports = { Optional.class, LocalDateTime.class })
 public interface UserMapper {
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())"),
-            @Mapping(source = "username", target = "username"),
-            @Mapping(source = "email", target = "email"),
-            @Mapping(source = "password", target = "password")
-    })
-    User toUser(RegisterRequest registerRequest); // Changed from toEntity to toUser
+        @Mappings({
+                        @Mapping(target = "id", ignore = true),
+                        @Mapping(target = "createdAt", expression = "java(LocalDateTime.now())"),
+                        @Mapping(source = "username", target = "username"),
+                        @Mapping(source = "email", target = "email"),
+                        @Mapping(source = "password", target = "password"),
+                        @Mapping(target = "subscribedTopics", ignore = true)
+        })
+        User toUser(RegisterRequest registerRequest);
 
-    @Mappings({
-            @Mapping(source = "id", target = "id"),
-            @Mapping(source = "username", target = "username"),
-            @Mapping(source = "email", target = "email"),
-            @Mapping(source = "createdAt", target = "createdAt")
-    })
-    UserDto toDto(User user);
+        @Mappings({
+                        @Mapping(source = "user.id", target = "userId"),
+                        @Mapping(source = "user.username", target = "username"),
+                        @Mapping(source = "user.email", target = "email"),
+                        @Mapping(source = "jwtToken", target = "token"),
+                        @Mapping(source = "message", target = "message"),
+                        @Mapping(source = "success", target = "success")
+        })
+        RegisterResponse toRegisterResponse(User user, String jwtToken, String message, boolean success);
 
-    @Mappings({
-            @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.username", target = "username"),
-            @Mapping(source = "user.email", target = "email"),
-            @Mapping(source = "message", target = "message"),
-            @Mapping(source = "success", target = "success")
-    })
-    LoginResponse toLoginResponse(User user, String message, boolean success);
+        @Mappings({
+                        @Mapping(source = "id", target = "id"),
+                        @Mapping(source = "username", target = "username"),
+                        @Mapping(source = "email", target = "email"),
+                        @Mapping(source = "createdAt", target = "createdAt"),
+                        @Mapping(source = "subscribedTopics", target = "subscribedTopics")
+        })
+        UserDto toDto(User user);
 
-    @Mappings({
-            @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.username", target = "username"),
-            @Mapping(source = "user.email", target = "email"),
-            @Mapping(source = "message", target = "message"),
-            @Mapping(source = "success", target = "success")
-    })
-    RegisterResponse toRegisterResponse(User user, String message, boolean success);
+        @Mappings({
+                        @Mapping(source = "user.id", target = "userId"),
+                        @Mapping(source = "user.usernameDisplay", target = "username"),
+                        @Mapping(source = "user.email", target = "email"),
+                        @Mapping(source = "jwtToken", target = "token"),
+                        @Mapping(source = "message", target = "message"),
+                        @Mapping(source = "success", target = "success"),
+                        @Mapping(target = "subscribedTopics", ignore = true)
+        })
+        LoginResponse toLoginResponse(User user, String jwtToken, String message, boolean success);
 
-    @Mappings({
-            @Mapping(source = "user.id", target = "userId"),
-            @Mapping(source = "user.username", target = "username"),
-            @Mapping(source = "user.email", target = "email"),
-            @Mapping(source = "message", target = "message"),
-            @Mapping(source = "success", target = "success")
-    })
-    UpdateProfileResponse toUpdateProfileResponse(User user, String message, boolean success);
+        @Mappings({
+                        @Mapping(source = "user.id", target = "userId"),
+                        @Mapping(source = "user.username", target = "username"),
+                        @Mapping(source = "user.email", target = "email"),
+                        @Mapping(source = "message", target = "message"),
+                        @Mapping(source = "success", target = "success")
+        })
+        UpdateProfileResponse toUpdateProfileResponse(User user, String message, boolean success);
 }
