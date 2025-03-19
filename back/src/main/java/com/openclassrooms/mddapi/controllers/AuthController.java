@@ -88,6 +88,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Registration failed", content = @Content(schema = @Schema(implementation = RegisterResponse.class)))
     })
     @PostMapping("/register")
+
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
         RegisterResponse response = userService.register(registerRequest);
 

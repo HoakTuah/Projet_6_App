@@ -7,6 +7,7 @@ import com.openclassrooms.mddapi.dto.RegisterResponse;
 import com.openclassrooms.mddapi.dto.UpdateProfileRequest;
 import com.openclassrooms.mddapi.dto.UpdateProfileResponse;
 import com.openclassrooms.mddapi.entity.User;
+import com.openclassrooms.mddapi.mapper.UserMapper;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
