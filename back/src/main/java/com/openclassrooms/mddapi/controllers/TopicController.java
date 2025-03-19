@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.controllers;
 
-import com.openclassrooms.mddapi.dto.TopicRequest;
+import com.openclassrooms.mddapi.dto.request.TopicRequest;
 import com.openclassrooms.mddapi.services.TopicService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,11 +1,11 @@
 package com.openclassrooms.mddapi.controllers;
 
-import com.openclassrooms.mddapi.dto.LoginRequest;
-import com.openclassrooms.mddapi.dto.LoginResponse;
-import com.openclassrooms.mddapi.dto.RegisterRequest;
-import com.openclassrooms.mddapi.dto.RegisterResponse;
-import com.openclassrooms.mddapi.dto.UpdateProfileRequest;
-import com.openclassrooms.mddapi.dto.UpdateProfileResponse;
+import com.openclassrooms.mddapi.dto.request.LoginRequest;
+import com.openclassrooms.mddapi.dto.request.RegisterRequest;
+import com.openclassrooms.mddapi.dto.request.UpdateProfileRequest;
+import com.openclassrooms.mddapi.dto.response.LoginResponse;
+import com.openclassrooms.mddapi.dto.response.RegisterResponse;
+import com.openclassrooms.mddapi.dto.response.UpdateProfileResponse;
 import com.openclassrooms.mddapi.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

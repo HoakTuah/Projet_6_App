@@ -1,4 +1,4 @@
-package com.openclassrooms.mddapi.dto;
+package com.openclassrooms.mddapi.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

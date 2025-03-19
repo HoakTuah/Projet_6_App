@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.services;
 
-import com.openclassrooms.mddapi.dto.TopicRequest;
+import com.openclassrooms.mddapi.dto.request.TopicRequest;
 import com.openclassrooms.mddapi.entity.Topic;
 import com.openclassrooms.mddapi.mapper.TopicMapper;
 import com.openclassrooms.mddapi.repository.TopicRepository;

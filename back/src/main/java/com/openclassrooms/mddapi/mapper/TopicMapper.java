@@ -1,6 +1,6 @@
 package com.openclassrooms.mddapi.mapper;
 
-import com.openclassrooms.mddapi.dto.TopicRequest;
+import com.openclassrooms.mddapi.dto.request.TopicRequest;
 import com.openclassrooms.mddapi.entity.Topic;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
