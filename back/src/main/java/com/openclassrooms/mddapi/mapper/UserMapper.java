@@ -30,7 +30,7 @@ public interface UserMapper {
 
         @Mappings({
                         @Mapping(source = "user.id", target = "userId"),
-                        @Mapping(source = "user.username", target = "username"),
+                        @Mapping(source = "user.usernameDisplay", target = "username"),
                         @Mapping(source = "user.email", target = "email"),
                         @Mapping(source = "jwtToken", target = "token"),
                         @Mapping(source = "message", target = "message"),
@@ -60,7 +60,7 @@ public interface UserMapper {
 
         @Mappings({
                         @Mapping(source = "user.id", target = "userId"),
-                        @Mapping(source = "user.username", target = "username"),
+                        @Mapping(source = "user.usernameDisplay", target = "username"),
                         @Mapping(source = "user.email", target = "email"),
                         @Mapping(source = "message", target = "message"),
                         @Mapping(source = "success", target = "success")
