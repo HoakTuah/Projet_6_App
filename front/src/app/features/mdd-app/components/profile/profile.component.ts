@@ -2,7 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
-import { ProfileService } from '../../services/profile.service';
+import { TopicService } from '../../services/topic.service';
+import { ProfileService } from '../../services/profile.service'; // Ajout de l'import
+import { Topic } from '../../interfaces/Topic.interface';
+import { HttpErrorResponse } from '@angular/common/http'; // Pour typer les erreurs
+
+interface UserResponse {
+  id: number;
+  username: string;
+  email: string;
+  [key: string]: any; // Pour les autres propriétés possibles
+}
 
 @Component({
   selector: 'app-profile',
@@ -15,24 +25,16 @@ export class ProfileComponent implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   isLoading: boolean = false;
-  subscriptions = [
-    {
-      id: 1,
-      title: 'Titre du thème',
-      description: 'Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard...'
-    },
-    {
-      id: 2,
-      title: 'Titre du thème',
-      description: 'Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard...'
-    }
-  ];
+  subscriptions: Topic[] = [];
+  isLoadingSubscriptions: boolean = false;
+  subscriptionError: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private profileService: ProfileService
+    private topicService: TopicService,
+    private profileService: ProfileService // Ajout du service
   ) {
     this.profileForm = this.fb.group({
       username: ['', Validators.required],
@@ -49,9 +51,32 @@ export class ProfileComponent implements OnInit {
         username: this.currentUser.username,
         email: this.currentUser.email
       });
+      
+      this.loadSubscriptions();
     } else {
       this.router.navigate(['/auth/login']);
     }
+  }
+
+  loadSubscriptions(): void {
+    this.isLoadingSubscriptions = true;
+    this.subscriptionError = '';
+
+    this.topicService.getSubscribedTopics().subscribe({
+      next: (topics: Topic[]) => {
+        this.subscriptions = topics;
+        this.isLoadingSubscriptions = false;
+      },
+      error: (error: HttpErrorResponse) => {
+        this.subscriptionError = 'Erreur lors du chargement des abonnements';
+        this.isLoadingSubscriptions = false;
+        console.error('Error loading subscriptions:', error);
+        
+        if (error.status === 401) {
+          this.router.navigate(['/auth/login']);
+        }
+      }
+    });
   }
 
   onSubmit(): void {
@@ -80,40 +105,45 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.profileService.updateProfile(this.currentUser.id, updateData)
-      .subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          if (response.success) {
-            // Update the stored user data
-            const updatedUser = {
-              ...this.currentUser,
-              username: response.username,
-              email: response.email
-            };
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            
-            this.successMessage = 'Profil mis à jour avec succès';
-            this.currentUser = updatedUser;
-            
-            // Clear password field
-            this.profileForm.patchValue({
-              password: ''
-            });
-          } else {
-            this.errorMessage = response.message || 'Une erreur est survenue lors de la mise à jour du profil';
-          }
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la mise à jour du profil';
-          console.error('Error updating profile:', error);
+    this.profileService.updateProfile(this.currentUser.id, updateData).subscribe({
+      next: (response: UserResponse) => {
+        this.currentUser = {
+          ...this.currentUser,
+          ...response
+        };
+        localStorage.setItem('user', JSON.stringify(this.currentUser));
+        
+        this.successMessage = 'Profil mis à jour avec succès';
+        this.isLoading = false;
+        
+        this.profileForm.patchValue({ password: '' });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading = false;
+        this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la mise à jour du profil';
+        console.error('Error updating profile:', error);
+        
+        if (error.status === 401) {
+          this.router.navigate(['/auth/login']);
         }
-      });
+      }
+    });
   }
 
-  unsubscribe(id: number): void {
-    console.log('Unsubscribed from theme:', id);
-    this.subscriptions = this.subscriptions.filter(sub => sub.id !== id);
+  unsubscribeFromTopic(topicId: number): void {
+    this.topicService.unsubscribeFromTopic(topicId).subscribe({
+      next: () => {
+        // Retirer le topic de la liste des abonnements
+        this.subscriptions = this.subscriptions.filter(topic => topic.id !== topicId);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.subscriptionError = 'Erreur lors du désabonnement';
+        console.error('Error unsubscribing:', error);
+        
+        if (error.status === 401) {
+          this.router.navigate(['/auth/login']);
+        }
+      }
+    });
   }
 }
