@@ -23,6 +23,12 @@ export class TopicService {
     });
   }
 
+  getSubscribedTopics(): Observable<Topic[]> {
+    return this.http.get<Topic[]>(`${this.apiUrl}/subscribed`, {
+      headers: this.httpHeadersService.getAuthHeaders()
+    });
+  }
+
   subscribeToTopic(topicId: number): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/${topicId}/subscribe`, 

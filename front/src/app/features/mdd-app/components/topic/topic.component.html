@@ -1,38 +1,18 @@
 <div class="topic-container">
-  <!-- Loading state -->
-  <div *ngIf="loading" class="topic-grid">
-    <div class="topic-card">
-      <h2>Chargement des thèmes...</h2>
-    </div>
-  </div>
-
-  <!-- Error state -->
-  <div *ngIf="error" class="topic-grid">
-    <div class="topic-card">
-      <h2>Erreur de chargement</h2>
-      <p>{{ error }}</p>
-      <button class="subscribe-button" (click)="loadTopics()">
-        Réessayer
-      </button>
-    </div>
-  </div>
-
-  <!-- Topics grid -->
-  <div class="topic-grid" *ngIf="!loading && !error">
-    <!-- No topics found state -->
-    <div class="topic-card" *ngIf="topics.length === 0">
-      <h2>Aucun thème</h2>
-      <p>Aucun thème n'est disponible pour le moment.</p>
+  
+  <!-- Grille des topics -->
+  <div class="topic-grid" *ngIf="!isLoading && !errorMessage">
+    <div class="no-topics" *ngIf="topics.length === 0">
+      <p>Aucun thème disponible</p>
     </div>
 
-    <!-- Topics list -->
     <div class="topic-card" *ngFor="let topic of topics">
       <h2>{{ topic.title }}</h2>
       <p>{{ topic.content }}</p>
       <button 
         [class]="topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'"
-        (click)="toggleSubscription(topic)"
-        [disabled]="loading">
+        (click)="subscribe(topic)"
+        [disabled]="topic.isSubscribed">
         {{ topic.isSubscribed ? 'Déjà abonné' : "S'abonner" }}
       </button>
     </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TopicService } from '../../services/topic.service';
 import { Topic } from '../../interfaces/Topic.interface';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-topic',
@@ -9,63 +10,59 @@ import { Topic } from '../../interfaces/Topic.interface';
 })
 export class TopicComponent implements OnInit {
   topics: Topic[] = [];
-  error: string = '';
-  loading: boolean = false;
+  isLoading = false;
+  errorMessage = '';
+  showOnlySubscribed = false;
 
   constructor(private topicService: TopicService) {}
 
   ngOnInit(): void {
-    this.topicService.getAllTopics().subscribe({
-      next: (response) => {
-        console.log('Topics received:', response); // Ajoutez ce log
-        this.topics = response;
+    this.loadAllData();
+  }
+
+  loadAllData(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    forkJoin({
+      allTopics: this.topicService.getAllTopics(),
+      subscribedTopics: this.topicService.getSubscribedTopics()
+    }).subscribe({
+      next: (result) => {
+        const subscribedIds = result.subscribedTopics.map(topic => topic.id);
+        this.topics = result.allTopics.map(topic => ({
+          ...topic,
+          isSubscribed: subscribedIds.includes(topic.id)
+        }));
+        this.isLoading = false;
       },
-      error: (error) => console.error('Error:', error)
+      error: (error) => {
+        this.errorMessage = 'Erreur lors du chargement des thèmes';
+        this.isLoading = false;
+        console.error('Error loading topics:', error);
+      }
     });
   }
 
-
-  loadTopics(): void {
-    this.loading = true;
-    this.topicService.getAllTopics()
-      .subscribe({
-        next: (data: Topic[]) => {
-          this.topics = data;
-          this.loading = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to load topics';
-          this.loading = false;
-          console.error('Error loading topics:', error);
-        }
-      });
+  getFilteredTopics(): Topic[] {
+    return this.showOnlySubscribed 
+      ? this.topics.filter(topic => topic.isSubscribed)
+      : this.topics;
   }
 
-  toggleSubscription(topic: Topic): void {
-    if (topic.isSubscribed) {
-      this.topicService.unsubscribeFromTopic(topic.id)
-        .subscribe({
-          next: () => {
-            topic.isSubscribed = false;
-          },
-          error: (error) => {
-            console.error('Error unsubscribing:', error);
-            // Revert the UI state if the request fails
-            topic.isSubscribed = true;
+  subscribe(topic: Topic): void {
+    if (!topic.isSubscribed) {
+      this.topicService.subscribeToTopic(topic.id).subscribe({
+        next: () => {
+          topic.isSubscribed = true;
+          if (topic.subscriberCount !== undefined) {
+            topic.subscriberCount++;
           }
-        });
-    } else {
-      this.topicService.subscribeToTopic(topic.id)
-        .subscribe({
-          next: () => {
-            topic.isSubscribed = true;
-          },
-          error: (error) => {
-            console.error('Error subscribing:', error);
-            // Revert the UI state if the request fails
-            topic.isSubscribed = false;
-          }
-        });
+        },
+        error: (error) => {
+          console.error('Error subscribing:', error);
+        }
+      });
     }
   }
 }
