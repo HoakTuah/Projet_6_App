@@ -12,6 +12,7 @@ public interface PostMapper {
     @Mappings({
             @Mapping(source = "id", target = "id"),
             @Mapping(source = "user.id", target = "userId"),
+            @Mapping(source = "user.usernameDisplay", target = "username"),
             @Mapping(source = "topic.id", target = "topicId"),
             @Mapping(source = "title", target = "title"),
             @Mapping(source = "content", target = "content"),
