@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { Post, Comment } from '../interfaces/PostRequest.Interface';
+import { Post, Comment } from '../../../interfaces/PostRequest.Interface';
 
 @Component({
   selector: 'app-post-detail',

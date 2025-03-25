@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router,ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../auth/services/auth.service';
-import { Post } from '../interfaces/PostRequest.Interface';
-import { PostService } from '../services/post.service';
+import { AuthService } from '../../../../auth/services/auth.service';
+import { Post } from '../../../interfaces/PostRequest.Interface';
+import { PostService } from '../../../services/post.service';
 
 @Component({
   selector: 'app-post',
-  templateUrl: './post.component.html',
-  styleUrls: ['./post.component.scss']
+  templateUrl: './post-list.component.html',
+  styleUrls: ['./post-list.component.scss']
 })
 
   export class PostComponent implements OnInit {

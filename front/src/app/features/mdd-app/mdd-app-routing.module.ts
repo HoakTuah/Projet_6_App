@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MddAppComponent } from './mdd-app.component';
-import { PostComponent } from './post/post.component';
-import { TopicComponent } from './topic/topic.component';
-import { PostDetailComponent } from './post-detail/post-detail.component';
-import { PostCreateComponent } from './post-create/post-create.component';
-import { ProfileComponent } from './profile/profile.component';
+import { PostComponent } from './components/post/post-list/post-list.component';
+import { TopicComponent } from './components/topic/topic.component';
+import { PostDetailComponent } from './components/post/post-detail/post-detail.component';
+import { PostCreateComponent } from './components/post/post-create/post-create.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   {

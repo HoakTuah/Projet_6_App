@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { RegisterRequest } from '../../interfaces/RegisterRequest.Interface';
+import { RegisterRequest } from '../../interfaces/Register.Interface';
 import { MessageService } from '../../services/message.service';  
 
 @Component({

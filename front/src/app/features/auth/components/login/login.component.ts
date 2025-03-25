@@ -2,7 +2,7 @@ import { Component, OnInit , OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { LoginRequest } from '../../interfaces/LoginRequest.Interface';
+import { LoginRequest } from '../../interfaces/Login.Interface';
 import { Subscription } from 'rxjs';
 import { MessageService } from '../../services/message.service';
 

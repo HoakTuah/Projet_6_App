@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 // Material Modules
 import { MatIconModule } from '@angular/material/icon';
@@ -12,16 +13,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Composants
 import { MddAppComponent } from './mdd-app.component';
-import { NavigationHeadComponent } from './navigation-head/navigation-head.component';
-import { PostComponent } from './post/post.component';
+import { NavigationHeadComponent } from './components/navigation-head/navigation-head.component';
+import { PostComponent } from './components/post/post-list/post-list.component';
 import { MddAppRoutingModule } from './mdd-app-routing.module';
-import { TopicComponent } from './topic/topic.component';
-import { PostDetailComponent } from './post-detail/post-detail.component';
-import { PostCreateComponent } from './post-create/post-create.component';
-import { ProfileComponent } from './profile/profile.component';
+import { TopicComponent } from './components/topic/topic.component';
+import { PostDetailComponent } from './components/post/post-detail/post-detail.component';
+import { PostCreateComponent } from './components/post/post-create/post-create.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { TopicService } from './services/topic.service';
 
 
 @NgModule({
@@ -47,7 +50,10 @@ import { ProfileComponent } from './profile/profile.component';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+    HttpClientModule,
+    MatProgressSpinnerModule
+  ],
+  providers: [TopicService]
 })
 export class MddAppModule { }

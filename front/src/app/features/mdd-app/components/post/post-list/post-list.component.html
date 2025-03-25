@@ -1,0 +1,31 @@
+<!-- Contenu principal -->
+<div class="main-content">
+    <div class="actions-container">
+      <button class="create-button" (click)="$event.stopPropagation(); onCreatePost()">
+        Créer un article
+      </button>
+  
+      <div class="sort-container">
+        <span>Trier par</span>
+        <button mat-icon-button [matMenuTriggerFor]="sortMenu" class="sort-button">
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #sortMenu="matMenu">
+          <button mat-menu-item (click)="sortPosts('date')">Date</button>
+          <button mat-menu-item (click)="sortPosts('title')">Titre</button>
+          <button mat-menu-item (click)="sortPosts('author')">Auteur</button>
+        </mat-menu>
+      </div>
+    </div>
+  
+    <div class="posts-grid">
+      <div class="post-card" *ngFor="let post of posts" (click)="onPostClick(post.id)">
+        <h2>{{ post.title }}</h2>
+        <div class="post-meta">
+          <span class="date">{{ post.date | date }}</span>
+          <span class="author">{{ post.author }}</span>
+        </div>
+        <p class="post-content">{{ post.content }}</p>
+      </div>
+  </div>
+  
