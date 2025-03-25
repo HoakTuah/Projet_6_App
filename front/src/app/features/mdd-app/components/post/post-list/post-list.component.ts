@@ -54,16 +54,21 @@ export class PostComponent implements OnInit {
   sortPosts(criteria: string) {
     switch (criteria) {
       case 'date':
-        this.posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.posts.sort((a, b) => 
+          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+        );
         break;
       case 'title':
         this.posts.sort((a, b) => a.title.localeCompare(b.title));
         break;
       case 'author':
-        this.posts.sort((a, b) => a.author.localeCompare(b.author));
+        this.posts.sort((a, b) => 
+          (a.username || '').localeCompare(b.username || '')
+        );
         break;
     }
   }
+
 
   onPostClick(postId: number): void {
     this.router.navigate(['../articles', postId], { relativeTo: this.route });

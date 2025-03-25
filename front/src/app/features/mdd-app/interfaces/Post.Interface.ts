@@ -1,12 +1,12 @@
 export interface Post {
     id: number;
+    userId: number;
+    username: string;
+    topicId: number;
     title: string;
-    date: Date;
-    author: string;
     content: string;
-    isSubscribed: boolean;
-}
-
+    publishedAt: string;
+  }
 export interface Comment {
     username: string;
     text: string;

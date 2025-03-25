@@ -10,14 +10,14 @@ import { Post, Comment } from '../../../interfaces/Post.Interface';
 })
 
 export class PostDetailComponent implements OnInit {
-  post: Post = {
-    id: 1,
-    title: "Titre de l'article",
-    date: new Date("2024-03-08"),
-    author: "Auteur",
-    content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
-    isSubscribed: false
-  };
+  // post: Post = {
+  //   id: 1,
+  //   title: "Titre de l'article",
+  //   date: new Date("2024-03-08"),
+  //   author: "Auteur",
+  //   content: "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled...",
+  //   isSubscribed: false
+  // };
 
   currentComment: Comment | null = null;
   newComment: string = '';

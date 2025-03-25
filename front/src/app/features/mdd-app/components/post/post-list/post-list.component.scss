@@ -1,117 +1,167 @@
 .main-content {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding-top: 30px; // Ajoute plus d'espace en haut
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding-top: 30px;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  width: 100%;
+  padding: 0 20px;
+  position: relative;
+}
+
+.create-button {
+  padding: 8px 16px;
+  background-color: #7B68EE;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 150px;
+  font-size: 14px;
+
+  &:hover {
+    background-color: darken(#7B68EE, 10%);
   }
-  
-  .actions-container {
+}
+
+.post-card {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    margin: 0 0 1rem;
+    color: #333;
+    font-size: 1.25rem;
+  }
+
+  .post-meta {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    width: 100%;
-    padding: 0 20px;
-    position: relative; // Pour le positionnement absolu du bouton
-  }
-  // Styles pour le bouton "Créer un article"
-  .create-button {
-    padding: 8px 16px;
-    background-color: #7B68EE;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    width: 150px;
-    font-size: 14px;
-  
-    &:hover {
-      background-color: darken(#7B68EE, 10%);
-    }
-  }
-  
-  // Styles pour la carte d'article
-  .post-card {
-    background: #f5f5f5;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
-    cursor: pointer;
-    h2 {
-      margin: 0 0 1rem;
-      color: #333;
-      font-size: 1.25rem;
-    }
-  
-    // Correction de l'espacement de la meta-info
-    .post-meta {
+    gap: 24px; // Augmenté l'espace entre date et auteur
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    flex-wrap: nowrap; // Empêche le retour à la ligne
+
+    .meta-item {
       display: flex;
-      justify-content: space-between;
-      color: #666;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      
-      .date, .author {
-        margin-right: 10px; // Ajoute de l'espace entre la date et l'auteur
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap; // Empêche le retour à la ligne du texte
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        color: #7B68EE;
+      }
+
+      span {
+        color: #666;
       }
     }
-  
-    .post-content {
-      color: #444;
-      line-height: 1.5;
-      font-size: 0.95rem;
-      margin-bottom: 1rem; // Ajoute de l'espace avant le bouton
-    }
-  
   }
-  
-  // Mise en page de la grille d'articles
-  
-  .posts-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  .post-content {
+    color: #444;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    box-orient: vertical; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    max-height: 4.5em; 
+  }
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 20px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.no-posts {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 30px 15px; // Ajuste le padding
+  }
+
+  .actions-container {
+    flex-direction: column;
     gap: 20px;
-    padding: 0 20px;
+    padding: 0;
+    align-items: center;
+    margin-bottom: 20px;
   }
-  
-  .post-card {
-    background: #f8f8f8;
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+
+  .create-button {
+    width: auto;
+    min-width: 120px;
+    max-width: 200px;
   }
-  
+
   .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 20px;
-  
+    grid-template-columns: 1fr;
+    padding: 0; // Retire le padding
+    gap: 1rem;
+    width: 100%;
   }
-  
-  
-  // Responsive
-  @media (max-width: 768px) {
-      .actions-container {
-      flex-direction: column;
-      gap: 20px;
-      padding: 0; // Reset le padding en mobile
-      align-items: center;
-    }
-  
-    
-    .posts-container {
-      padding: 0 15px; // Réduit le padding horizontal
-      grid-template-columns: 1fr; // Une seule colonne en mobile
-    }
-  
-    .post-card {
-      margin: 0 auto; // Centre la carte
-      width: calc(100% - 30px); // Ajuste la largeur en tenant compte du padding
-    }
+
+  .post-card {
+    width: calc(100% - 2rem); // Ajuste la largeur avec une marge
+    margin: 0 auto; // Centre la carte
+    padding: 1rem;
   }
+}
