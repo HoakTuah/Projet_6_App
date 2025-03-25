@@ -1,23 +1,37 @@
 <div class="create-post-container">
-    <div class="header">
-        <button class="back-button" (click)="$event.stopPropagation(); goBack()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <h1>Créer un nouvel article</h1>
-    </div>
-  
-    <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
-      <select formControlName="theme" placeholder="Sélectionner un thème">
-        <option value="" disabled selected>Sélectionner un thème</option>
-        <option *ngFor="let theme of themes" [value]="theme.id">{{ theme.name }}</option>
-      </select>
-  
-      <input type="text" formControlName="title" placeholder="Titre de l'article">
-  
-      <textarea formControlName="content" placeholder="Contenu de l'article" rows="8"></textarea>
-  
-      <button type="submit" class="submit-button" [disabled]="!postForm.valid">
-        Créer
-      </button>
-    </form>
+  <div class="header">
+    <button class="back-button" (click)="$event.stopPropagation(); goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Créer un nouvel article</h1>
   </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+    <select formControlName="topicId" placeholder="Sélectionner un thème">
+      <option value="" disabled selected>Sélectionner un thème</option>
+      <option *ngFor="let theme of themes" [value]="theme.id">{{ theme.title }}</option>
+    </select>
+
+    <input 
+      type="text" 
+      formControlName="title" 
+      placeholder="Titre de l'article">
+
+    <textarea 
+      formControlName="content" 
+      placeholder="Contenu de l'article" 
+      rows="8">
+    </textarea>
+
+    <button 
+      type="submit" 
+      class="submit-button" 
+      [disabled]="!postForm.valid || isLoading">
+      {{ isLoading ? 'Création...' : 'Créer' }}
+    </button>
+  </form>
+</div>

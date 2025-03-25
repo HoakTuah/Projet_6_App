@@ -1,10 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Post } from '../interfaces/PostRequest.Interface';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { HttpHeadersService } from 'src/app/core/services/http-headers.service';
+import { Post } from '../interfaces/Post.Interface';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  private apiUrl = `${environment.apiUrl}/api/posts`;
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private httpHeadersService: HttpHeadersService
+  ) {}
 
+  getAllPosts(): Observable<Post[]> {
+    return this.http.get<Post[]>(this.apiUrl, {
+      headers: this.httpHeadersService.getAuthHeaders()
+    });
+  }
+
+  createPost(postData: { title: string; content: string; topicId: number }): Observable<Post> {
+    return this.http.post<Post>(
+      this.apiUrl, 
+      postData,
+      { headers: this.httpHeadersService.getAuthHeaders() }
+    );
+  }
+
+  getPostById(id: number): Observable<Post> {
+    return this.http.get<Post>(`${this.apiUrl}/${id}`, {
+      headers: this.httpHeadersService.getAuthHeaders()
+    });
+  }
 }

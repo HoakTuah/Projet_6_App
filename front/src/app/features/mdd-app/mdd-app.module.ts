@@ -25,6 +25,8 @@ import { PostDetailComponent } from './components/post/post-detail/post-detail.c
 import { PostCreateComponent } from './components/post/post-create/post-create.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { TopicService } from './services/topic.service';
+import { PostService } from './services/post.service';
+import { ProfileService } from './services/profile.service';
 
 
 @NgModule({
@@ -54,6 +56,9 @@ import { TopicService } from './services/topic.service';
     HttpClientModule,
     MatProgressSpinnerModule
   ],
-  providers: [TopicService]
+  providers: [TopicService,
+    PostService,
+    ProfileService
+  ]
 })
 export class MddAppModule { }
