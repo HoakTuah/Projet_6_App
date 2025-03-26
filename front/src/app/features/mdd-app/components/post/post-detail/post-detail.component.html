@@ -1,44 +1,70 @@
-<!-- <div class="post-detail-container">
-    <div class="post-header">
-        <div class="header-top">
-            <button class="back-button" (click)="goBack()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
-            <h1>{{ post.title }}</h1>
-        </div>
-        <div class="post-meta">
-            <span class="date">{{ post.date | date }}</span>
-            <span class="author">Par {{ post.author }}</span>
-        </div>
-    </div> -->
-  
-    <!-- <div class="post-content">
-        <p>{{ post.content }}</p>
-    </div>
-   -->
-    <!-- <div class="comments-section">
-        <h2>Commentaires</h2>
-        <!-- Display existing comment if any -->
-        <!-- <div class="comment" *ngIf="currentComment">
-            <div class="comment-header">
-                <span class="username">{{ currentComment.username }}</span>
-                <span class="date">{{ currentComment.date | date }}</span>
-            </div>
-            <p class="comment-text">{{ currentComment.text }}</p>
-        </div>
+<div class="post-detail-container">
+  <div class="header-top">
+    <button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>{{ post?.title }}</h1>
+  </div>
 
-        <!-- Comment form -->
-        <!-- <div class="comment-form" *ngIf="!currentComment">
-            <textarea 
-                placeholder="Écrivez votre commentaire..." 
-                [(ngModel)]="newComment">
-            </textarea>
-            <button class="submit-button" 
-                    (click)="submitComment()" 
-                    [disabled]="!newComment || newComment.trim().length === 0">
-                <mat-icon>send</mat-icon>
-                Envoyer
-            </button>
-        </div>
+  <div class="post-content" *ngIf="post && !isLoading && !errorMessage">
+    <div class="post-meta">
+      <div class="meta-item date-item">
+        <mat-icon>calendar_today</mat-icon>
+        <span>{{ post.publishedAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="meta-item author-item">
+        <mat-icon>person</mat-icon>
+        <span>{{ post.username }}</span>
+      </div>
+      <div class="meta-item">
+        <mat-icon>bookmark</mat-icon>
+        <span>{{ post.topicTitle || 'Sans thème' }}</span>
+      </div>
     </div>
-</div> --> 
+
+    <div class="post-body">
+      <p>{{ post.content }}</p>
+    </div>
+
+    <div class="divider"></div>
+    <!-- Section des commentaires -->
+    <div class="comments-section">
+      <h2>Commentaires</h2>
+      
+      <!-- Liste des commentaires -->
+      <div class="comments-list" *ngIf="comments.length > 0">
+        <div class="comment-item" *ngFor="let comment of comments">
+          <div class="comment-author">{{ comment.username }}</div>
+          <div class="comment-content">{{ comment.content }}</div>
+        </div>
+      </div>
+      
+      <div class="no-comments" *ngIf="comments.length === 0">
+        Aucun commentaire pour le moment.
+      </div>
+      
+      <!-- Formulaire d'ajout de commentaire -->
+      <div class="comment-form-container">
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+          <textarea 
+            formControlName="content" 
+            placeholder="Écrivez ici votre commentaire"
+            [class.invalid]="commentForm.get('content')?.invalid && commentForm.get('content')?.touched"
+          ></textarea>
+          
+          <button 
+            type="submit" 
+            class="submit-comment-btn" 
+            [disabled]="commentForm.invalid || isSubmittingComment"
+          >
+            <mat-icon>send</mat-icon>
+          </button>
+        </form>
+        
+        <div class="form-error" *ngIf="commentForm.get('content')?.invalid && commentForm.get('content')?.touched">
+          Le commentaire ne peut pas être vide et doit contenir moins de 500 caractères.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

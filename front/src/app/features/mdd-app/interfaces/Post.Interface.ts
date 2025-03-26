@@ -1,8 +1,10 @@
+import { Topic } from "./Topic.interface";
+
 export interface Post {
     id: number;
     userId: number;
     username: string;
-    topicId: number;
+    topicTitle: string;
     title: string;
     content: string;
     publishedAt: string;
