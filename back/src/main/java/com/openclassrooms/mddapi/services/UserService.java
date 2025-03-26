@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.openclassrooms.mddapi.Security.JwtService;
+import com.openclassrooms.mddapi.Security.PasswordValidator;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -141,6 +142,12 @@ public class UserService implements UserDetailsService {
             return userMapper.toRegisterResponse(null, null, "Email already exists", false);
         }
 
+        // Validate password strength
+        String validationError = PasswordValidator.validate(registerRequest.getPassword());
+        if (validationError != null) {
+            return userMapper.toRegisterResponse(null, null, validationError, false);
+        }
+
         // Create new user with encoded password
         User newUser = userMapper.toUser(registerRequest);
         newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
@@ -196,6 +203,12 @@ public class UserService implements UserDetailsService {
 
         // Check and update password if provided
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
+            // Validate password strength
+            String validationError = PasswordValidator.validate(updateRequest.getPassword());
+            if (validationError != null) {
+                return userMapper.toUpdateProfileResponse(user, validationError, false);
+            }
+
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
             changes = true;
         }
