@@ -53,18 +53,24 @@ export class PostComponent implements OnInit {
 
   sortPosts(criteria: string) {
     switch (criteria) {
-      case 'date':
-        this.posts.sort((a, b) => 
-          new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-        );
+      case 'date-desc':
+        this.posts.sort((a, b) => {
+     
+          const dateA = new Date(a.publishedAt.split('/').reverse().join('-'));
+          const dateB = new Date(b.publishedAt.split('/').reverse().join('-'));
+          return dateB.getTime() - dateA.getTime();
+        });
+        break;
+      case 'date-asc':
+        this.posts.sort((a, b) => {
+
+          const dateA = new Date(a.publishedAt.split('/').reverse().join('-'));
+          const dateB = new Date(b.publishedAt.split('/').reverse().join('-'));
+          return dateA.getTime() - dateB.getTime();
+        });
         break;
       case 'title':
         this.posts.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case 'author':
-        this.posts.sort((a, b) => 
-          (a.username || '').localeCompare(b.username || '')
-        );
         break;
     }
   }

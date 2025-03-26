@@ -27,44 +27,44 @@
     </div>
 
     <div class="divider"></div>
-    <!-- Section des commentaires -->
-    <div class="comments-section">
-      <h2>Commentaires</h2>
-      
-      <!-- Liste des commentaires -->
-      <div class="comments-list" *ngIf="comments.length > 0">
-        <div class="comment-item" *ngFor="let comment of comments">
-          <div class="comment-author">{{ comment.username }}</div>
-          <div class="comment-content">{{ comment.content }}</div>
-        </div>
+<!-- Section des commentaires -->
+<div class="comments-section">
+  <h2>Commentaires</h2>
+  
+  <!-- Liste des commentaires -->
+  <div class="comments-list" *ngIf="comments.length > 0">
+    <div class="comment-wrapper" *ngFor="let comment of comments">
+      <div class="comment-author">{{ comment.username }}</div>
+      <div class="comment-box">
+        <div class="comment-content">{{ comment.content }}</div>
       </div>
+    </div>
+  </div>
+  
+  <div class="no-comments" *ngIf="comments.length === 0">
+    Aucun commentaire pour le moment.
+  </div>
+  
+  <!-- Formulaire d'ajout de commentaire -->
+  <div class="comment-form-container">
+    <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+      <textarea 
+        formControlName="content" 
+        placeholder="Écrivez ici votre commentaire"
+        [class.invalid]="commentForm.get('content')?.invalid && commentForm.get('content')?.touched"
+      ></textarea>
       
-      <div class="no-comments" *ngIf="comments.length === 0">
-        Aucun commentaire pour le moment.
-      </div>
-      
-      <!-- Formulaire d'ajout de commentaire -->
-      <div class="comment-form-container">
-        <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
-          <textarea 
-            formControlName="content" 
-            placeholder="Écrivez ici votre commentaire"
-            [class.invalid]="commentForm.get('content')?.invalid && commentForm.get('content')?.touched"
-          ></textarea>
-          
-          <button 
-            type="submit" 
-            class="submit-comment-btn" 
-            [disabled]="commentForm.invalid || isSubmittingComment"
-          >
-            <mat-icon>send</mat-icon>
-          </button>
-        </form>
-        
-        <div class="form-error" *ngIf="commentForm.get('content')?.invalid && commentForm.get('content')?.touched">
-          Le commentaire ne peut pas être vide et doit contenir moins de 500 caractères.
-        </div>
-      </div>
+      <button 
+        type="submit" 
+        class="submit-comment-btn" 
+        [disabled]="commentForm.invalid || isSubmittingComment"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+    
+    <div class="form-error" *ngIf="commentForm.get('content')?.invalid && commentForm.get('content')?.touched">
+      Le commentaire ne peut pas être vide et doit contenir moins de 500 caractères.
     </div>
   </div>
 </div>

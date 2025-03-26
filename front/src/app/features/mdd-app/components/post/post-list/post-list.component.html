@@ -10,9 +10,9 @@
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #sortMenu="matMenu">
-        <button mat-menu-item (click)="sortPosts('date')">Date</button>
+        <button mat-menu-item (click)="sortPosts('date-desc')">Date (récent → ancien)</button>
+        <button mat-menu-item (click)="sortPosts('date-asc')">Date (ancien → récent)</button>
         <button mat-menu-item (click)="sortPosts('title')">Titre</button>
-        <button mat-menu-item (click)="sortPosts('author')">Auteur</button>
       </mat-menu>
     </div>
   </div>
