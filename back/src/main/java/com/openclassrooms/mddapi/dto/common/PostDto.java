@@ -9,6 +9,7 @@ public class PostDto {
     private Integer userId;
     private String username;
     private Integer topicId;
+    private String topicTitle;
     private String title;
     private String content;
     private LocalDateTime publishedAt;
