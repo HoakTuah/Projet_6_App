@@ -1,38 +1,47 @@
+//=============================================================
+//  Main Login Page Container
+//=============================================================
 .login-page {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    
-    @media (max-width: 600px) {
-      padding: 10px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  @media (max-width: 600px) {
+    padding: 10px;
+  }
+}
+
+//=============================================================
+//  Header Section Styling
+//=============================================================
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  
+  .logo-container {
+    .logo {
+      height: 40px;
     }
   }
   
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
+  .back-button {
+    background: none;
+    border: none;
+    cursor: pointer;
     
-    .logo-container {
-      .logo {
-        height: 40px;
-      }
-    }
-    
-    .back-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      
-      mat-icon {
-        font-size: 24px;
-      }
+    mat-icon {
+      font-size: 24px;
     }
   }
-  
+}
+
+//=============================================================
+//  Main Content Area Styling
+//=============================================================
   .content {
     padding: 20px 0;
     
@@ -90,6 +99,10 @@
       }
     }
   }
+
+//=============================================================
+//  Message Styling
+//=============================================================
   .error-message {
     background-color: #ffebee;
     color: #c62828;
@@ -104,7 +117,7 @@
     font-size: 12px;
     margin-top: 5px;
   }
-  // Ajouter aux styles existants
+
 .success-message {
   background-color: #e8f5e9;
   color: #2e7d32;
@@ -114,7 +127,9 @@
   text-align: center;
 }
   
-  /* Responsive styles */
+//=============================================================
+//  Responsive Styles
+//=============================================================
   @media (max-width: 600px) {
     .content {
       h1 {

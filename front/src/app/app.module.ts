@@ -4,9 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
-
+import { HttpClientModule } from '@angular/common/http';
 
 // Angular Material imports
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +18,7 @@ import { AuthModule } from './features/auth/auth.module';
   declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     AuthModule,
@@ -27,12 +26,9 @@ import { AuthModule } from './features/auth/auth.module';
     MatCardModule,
     MatInputModule,
     MatFormFieldModule,
-    MatIconModule,
-    HttpClientModule
+    MatIconModule
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
-  ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

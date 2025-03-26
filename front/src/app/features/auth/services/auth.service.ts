@@ -11,43 +11,71 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
+  //=============================================================
+  // API base URL from environment configuration
+  //=============================================================
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private router: Router) { }
+
+  //=============================================================
+  //  Register User
+  //=============================================================
 
   register(registerData: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiUrl}/api/auth/register`, registerData);
   }
 
+  //=============================================================
+  //  Login User
+  //=============================================================
+
   login(loginData: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/api/auth/login`, loginData).pipe(
       tap(response => {
         if (response.success) {
+          // Store token and user data in local storage
           localStorage.setItem('token', response.token);
-          // Créer l'objet user avec les données de la réponse
+
+          // Create user object with response data
           const userData = {
             id: response.userId,
             username: response.username,
             email: response.email,
             subscribedTopics: response.subscribedTopics
           };
+
+          // Store user data in local storage
           localStorage.setItem('user', JSON.stringify(userData));
+
+          // Navigate to main page after successful login
           this.router.navigate(['/MDD/articles']);
         }
       })
     );
   }
 
-  logout(): void {
+  //=============================================================
+  //  Logout User
+  //=============================================================
 
+  logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     this.router.navigate(['/auth/login']);
   }
 
+  //=============================================================
+  //  Check if User is Logged In
+  //=============================================================
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token') && !!localStorage.getItem('user');
   }
+
+  //=============================================================
+  //  Get Current User
+  //=============================================================
 
   getCurrentUser(): User | null {
     const userStr = localStorage.getItem('user');
@@ -61,6 +89,10 @@ export class AuthService {
     }
     return null;
   }
+
+  //=============================================================
+  //  Get Token
+  //=============================================================
 
   getToken(): string | null {
     return localStorage.getItem('token');

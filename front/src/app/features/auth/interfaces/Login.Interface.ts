@@ -1,7 +1,8 @@
 export interface LoginRequest {
-    username: string;  // Peut être un email ou un nom d'utilisateur
+    username: string; 
     password: string;
 }
+
 export interface LoginResponse {
   userId: number;
   username: string;

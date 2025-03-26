@@ -32,20 +32,21 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
+  //=============================================================
+  //  Initialization
+  //=============================================================
   ngOnInit() {
-    // S'abonner au MessageService
+    // Subscribe to MessageService for notifications
     this.messageSubscription = this.messageService.currentMessage.subscribe(message => {
-      console.log('Message reçu dans login:', message); // Pour déboguer
       if (message) {
         this.successMessage = message;
-        // Optionnel : effacer le message après quelques secondes
         setTimeout(() => {
           this.successMessage = '';
           this.messageService.clearMessage();}, 3000);
       }
     });
   
-    // Garder aussi la logique existante pour les paramètres d'URL
+    // Check URL params for registration success
     this.route.queryParams.subscribe(params => {
       if (params['registered'] === 'true') {
         this.successMessage = params['message'] || 'Inscription réussie !';
@@ -54,11 +55,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Se désabonner pour éviter les fuites de mémoire
+    // Unsubscribe to prevent memory leaks
     if (this.messageSubscription) {
         this.messageSubscription.unsubscribe();
     }
 }
+
+  //=============================================================
+  //  Form Submission Handler
+  //=============================================================
 
   onSubmit() {
     if (this.loginForm.valid) {
@@ -67,20 +72,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       const loginData: LoginRequest = this.loginForm.value;
 
+      // Call auth service to authenticate user
       this.authService.login(loginData).subscribe({
         next: (response) => {
-          console.log('Login successful', response);
           this.isLoading = false;
 
           if (response.success) {
-            // Stocker les informations de l'utilisateur si nécessaire
+            // Store user information if needed
             localStorage.setItem('user', JSON.stringify({
               id: response.userId,
               username: response.username,
               email: response.email
             }));
             
-            // Rediriger vers la page d'accueil
+            // Redirect to home page
             this.router.navigate(['/MDD/articles']);
           } else {
             this.errorMessage = response.message || 'Erreur de connexion';
@@ -95,6 +100,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  //=============================================================
+  //  Navigation Methods
+  //=============================================================
   goToRegister() {
     this.router.navigate(['/register']);
   }

@@ -1,3 +1,4 @@
+<!-- SECTION: Register Page Container -->
 <div class="register-page">
     <div class="header">
       <div class="logo-container">
@@ -8,6 +9,7 @@
       </button>
     </div>
     
+    <!-- SECTION: Main Content Container -->
     <div class="content">
       <h1>Inscription</h1>
 
@@ -15,6 +17,7 @@
         {{ errorMessage }}
       </div>
       
+      <!-- SECTION: Registration Form -->
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-field">
           <label for="username">Nom d'utilisateur</label>
@@ -51,7 +54,8 @@
             Champ invalide
           </div>
         </div>
-        
+
+        <!-- SECTION: Submit Button -->
         <button type="submit" class="submit-button" [disabled]="!registerForm.valid">S'inscrire</button>
       </form>
     </div>

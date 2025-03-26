@@ -29,6 +29,10 @@ export class RegisterComponent {
     });
   }
   
+  //=============================================================
+  //  Form Submission Handler
+  //=============================================================
+
   onSubmit() {
     if (this.registerForm.valid) {
         this.isLoading = true;
@@ -36,13 +40,14 @@ export class RegisterComponent {
       
         const registerData: RegisterRequest = this.registerForm.value;
       
+         // Call auth service to register user
         this.authService.register(registerData).subscribe({
           next: (response) => {
           
           this.isLoading = false;
           
           if (response.success) {
-            // Redirection vers la page de login avec un message de succès
+            // Redirect to login page with success message
             this.messageService.setMessage('Inscription réussie ! Vous pouvez maintenant vous connecter.');
             this.router.navigate(['/auth/login']);
           } else {
@@ -66,6 +71,9 @@ export class RegisterComponent {
     }
   }
   
+  //=============================================================
+  //  Navigation Methods
+  //=============================================================
   goBack() {
     this.router.navigate(['/']);
   }

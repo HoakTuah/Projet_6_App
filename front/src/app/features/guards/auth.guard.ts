@@ -10,15 +10,15 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    // Vérifier si l'utilisateur est connecté
+    // Check if user is logged in
     const user = localStorage.getItem('user');
     
     if (user) {
-      // Si l'utilisateur est connecté, autoriser l'accès
+       // If user is logged in, allow access
       return true;
     }
 
-    // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+    // If user is not logged in, redirect to login page
     this.router.navigate(['/auth/login']);
     return false;
   }
