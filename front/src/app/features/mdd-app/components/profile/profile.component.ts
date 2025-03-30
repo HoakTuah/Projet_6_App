@@ -3,15 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../auth/services/auth.service';
 import { TopicService } from '../../services/topic.service';
-import { ProfileService } from '../../services/profile.service'; // Ajout de l'import
+import { ProfileService } from '../../services/profile.service'; 
 import { Topic } from '../../interfaces/Topic.interface';
-import { HttpErrorResponse } from '@angular/common/http'; // Pour typer les erreurs
+import { HttpErrorResponse } from '@angular/common/http';
 
 interface UserResponse {
   id: number;
   username: string;
   email: string;
-  [key: string]: any; // Pour les autres propriétés possibles
+  [key: string]: any;
 }
 
 @Component({
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private topicService: TopicService,
-    private profileService: ProfileService // Ajout du service
+    private profileService: ProfileService
   ) {
     this.profileForm = this.fb.group({
       username: ['', Validators.required],
@@ -43,6 +43,9 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Lifecycle Hooks
+  //============================================================= 
   ngOnInit(): void {
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -58,6 +61,9 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  //=============================================================
+  //  Subscription Loading Methods
+  //=============================================================
   loadSubscriptions(): void {
     this.isLoadingSubscriptions = true;
     this.subscriptionError = '';
@@ -79,6 +85,9 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Profile Update Methods
+  //=============================================================
   onSubmit(): void {
     if (this.profileForm.invalid) {
       return;
@@ -130,10 +139,12 @@ export class ProfileComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Topic Unsubscription Methods
+  //=============================================================
   unsubscribeFromTopic(topicId: number): void {
     this.topicService.unsubscribeFromTopic(topicId).subscribe({
       next: () => {
-        // Retirer le topic de la liste des abonnements
         this.subscriptions = this.subscriptions.filter(topic => topic.id !== topicId);
       },
       error: (error: HttpErrorResponse) => {

@@ -16,10 +16,16 @@ export class TopicComponent implements OnInit {
 
   constructor(private topicService: TopicService) {}
 
+  //=============================================================
+  //  Lifecycle Hooks
+  //=============================================================
   ngOnInit(): void {
     this.loadAllData();
   }
 
+  //=============================================================
+  //  Data Loading Methods
+  //=============================================================
   loadAllData(): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -44,12 +50,18 @@ export class TopicComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Topic Filtering Methods
+  //=============================================================
   getFilteredTopics(): Topic[] {
     return this.showOnlySubscribed 
       ? this.topics.filter(topic => topic.isSubscribed)
       : this.topics;
   }
 
+  //=============================================================
+  //  Subscription Management Methods
+  //=============================================================
   subscribe(topic: Topic): void {
     if (!topic.isSubscribed) {
       this.topicService.subscribeToTopic(topic.id).subscribe({

@@ -1,5 +1,6 @@
+<!-- SECTION: Main Profile Container -->
 <div class="profile-container">
-  <!-- Section Profil -->
+  <!-- SECTION: Profile Title -->
   <h1 class="profile-title">Mon Profil</h1>
 
   <div class="success-message" *ngIf="successMessage">
@@ -10,22 +11,27 @@
     {{ errorMessage }}
   </div>
 
+  <!-- SECTION: Profile Form -->
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form" *ngIf="!isLoading">
+    <!-- SECTION: Username Input -->
     <input 
       type="text" 
       formControlName="username" 
       placeholder="Nom d'utilisateur">
 
+    <!-- SECTION: Email Input -->
     <input 
       type="email" 
       formControlName="email" 
       placeholder="Email">
 
+    <!-- SECTION: Password Input -->
     <input 
       type="password" 
       formControlName="password" 
       placeholder="Nouveau mot de passe (optionnel)">
 
+    <!-- SECTION: Submit Button -->
     <button 
       type="submit" 
       class="save-button"
@@ -35,9 +41,10 @@
   </form>
 </div>
 
+<!-- SECTION: Divider -->
 <div class="divider"></div>
 
-<!-- Section Abonnements -->
+<!-- SECTION: Subscriptions Section -->
 <div class="subscriptions-section">
   <h2 class="section-title">Mes Abonnements</h2>
 
@@ -49,16 +56,20 @@
     {{ subscriptionError }}
   </div>
 
+  <!-- SECTION: Subscriptions Grid -->
   <div class="topic-grid" *ngIf="!isLoadingSubscriptions && !subscriptionError">
     <div *ngIf="subscriptions.length === 0" class="no-topics">
       <p>Vous n'êtes abonné à aucun thème pour le moment.</p>
     </div>
 
+    <!-- SECTION: Topic Cards -->
     <div class="topic-card" *ngFor="let topic of subscriptions">
+      <!-- SECTION: Topic Content -->
       <div class="card-content">
         <h2>{{ topic.title }}</h2>
         <p>{{ topic.content }}</p>
       </div>
+      <!-- SECTION: Unsubscribe Button -->
       <button (click)="unsubscribeFromTopic(topic.id)">
         Se désabonner
       </button>

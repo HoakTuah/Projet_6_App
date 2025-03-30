@@ -22,10 +22,16 @@ export class PostComponent implements OnInit {
     private postService: PostService
   ) {}
 
+  //=============================================================
+  //  Lifecycle Hooks
+  //=============================================================
   ngOnInit() {
     this.loadPosts();
   }
 
+  //=============================================================
+  //  Post Loading Methods
+  //=============================================================
   loadPosts() {
     this.isLoading = true;
     this.errorMessage = '';
@@ -47,10 +53,9 @@ export class PostComponent implements OnInit {
     });
   }
 
-  onCreatePost() {
-    this.router.navigate(['create'], { relativeTo: this.route });
-  }
-
+  //=============================================================
+  //  Post Sorting Methods
+  //=============================================================
   sortPosts(criteria: string) {
     switch (criteria) {
       case 'date-desc':
@@ -75,7 +80,12 @@ export class PostComponent implements OnInit {
     }
   }
 
-
+  //=============================================================
+  //  Navigation Methods & Logout
+  //=============================================================
+  onCreatePost() {
+    this.router.navigate(['create'], { relativeTo: this.route });
+  }
   onPostClick(postId: number): void {
     this.router.navigate(['../articles', postId], { relativeTo: this.route });
   }

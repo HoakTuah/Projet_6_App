@@ -1,3 +1,6 @@
+//=============================================================
+//  Main Container Styles
+//=============================================================
 .login-container {
   width: 100%;
   height: 100vh;
@@ -10,6 +13,9 @@
   padding-top: 15vh;
 }
 
+//=============================================================
+//  Logo Styles
+//=============================================================
 .logo-container {
   margin-bottom: 48px;
   
@@ -23,6 +29,9 @@
   }
 }
 
+//=============================================================
+//  Button Container Styles
+//=============================================================
 .buttons-container {
   width: 100%;
   max-width: 400px;
@@ -36,16 +45,19 @@
     max-width: 250px;
   }
   
+  //=============================================================
+  //  Button Styles
+  //=============================================================
   button {
     min-width: 150px;
     padding: 8px 24px;
     border-radius: 10px;
     font-size: 16px;
     &.login-button, &.signup-button {
-      border: 2px solid black; /* Increased from 1px to 2px */
+      border: 2px solid black; 
     }
     
-    
+  
     @media (max-width: 599px) {
       width: 100%;
     }

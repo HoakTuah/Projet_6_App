@@ -1,3 +1,6 @@
+//=============================================================
+//  Main Container Styles
+//=============================================================
 .create-post-container {
     max-width: 800px;
     margin: 0 auto;
@@ -5,6 +8,10 @@
     box-sizing: border-box;
   }
   
+  //=============================================================
+  //  Header Styles
+  //=============================================================
+
   .header {
     display: flex;
     align-items: center;
@@ -29,10 +36,14 @@
       margin: 0;
       text-align: center;
       flex-grow: 1;
-      margin-right: 24px; // To balance the back button
+      margin-right: 24px;
     }
   }
   
+  //=============================================================
+  //  Form Styles
+  //=============================================================
+
   .post-form {
     display: flex;
     flex-direction: column;
@@ -41,7 +52,7 @@
     select, input, textarea {
       width: 100%;
       padding: 12px;
-      border: 1px solid #9747FF; // Purple border color
+      border: 1px solid #9747FF; 
       border-radius: 8px;
       font-size: 14px;
       box-sizing: border-box;
@@ -50,8 +61,8 @@
       
       &:focus {
         outline: none;
-        border-color: #7B68EE; // Slightly darker purple on focus
-        box-shadow: 0 0 0 1px rgba(151, 71, 255, 0.2); // Subtle purple glow
+        border-color: #7B68EE; 
+        box-shadow: 0 0 0 1px rgba(151, 71, 255, 0.2); 
       }
     }
     
@@ -79,7 +90,10 @@
     }
   }
   
-  // Mobile styles
+  //=============================================================
+  //  Mobile Responsive Styles
+  //=============================================================
+  
   @media (max-width: 768px) {
     .create-post-container {
       padding: 10px;

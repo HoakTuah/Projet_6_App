@@ -3,11 +3,9 @@
     background-color: white;
     display: flex;
     flex-direction: column;
-  
-    // Ajout d'un padding-top pour compenser la hauteur de la navigation fixe
-    padding-top: 60px; // Hauteur de la barre de navigation
+    padding-top: 60px; 
   
     @media (max-width: 768px) {
-      padding-top: 60px; // Même hauteur pour mobile
+      padding-top: 60px; 
     }
   }

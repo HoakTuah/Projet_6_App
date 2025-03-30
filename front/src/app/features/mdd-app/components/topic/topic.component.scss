@@ -1,15 +1,24 @@
+//=============================================================
+//  Main Container Styles 
+//=============================================================
 .topic-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
   }
   
+//=============================================================
+//  Topic Grid Layout
+//=============================================================
   .topic-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
   }
   
+//=============================================================
+//  Topic Card Styles
+//=============================================================
   .topic-card {
     background: #f8f8f8;
     border-radius: 8px;
@@ -27,6 +36,9 @@
     }
   }
   
+//=============================================================
+//  Button Styles
+//=============================================================
   .subscribe-button, .subscribed-button {
     width: 100%;
     padding: 10px;
@@ -37,6 +49,9 @@
     transition: background-color 0.3s ease;
   }
   
+//=============================================================
+//  Subscribe Button Styles
+//=============================================================
   .subscribe-button {
     background-color: #9747FF;
     color: white;
@@ -46,12 +61,18 @@
     }
   }
   
+//=============================================================
+//  Subscribed Button Styles
+//=============================================================
   .subscribed-button {
     background-color: #ccc;
     color: #666;
     cursor: default;
   }
   
+//=============================================================
+//  Mobile Responsive Styles
+//=============================================================
   @media (max-width: 768px) {
     .topics-container {
       padding: 10px;

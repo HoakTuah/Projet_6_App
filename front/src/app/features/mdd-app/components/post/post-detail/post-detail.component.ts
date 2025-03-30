@@ -33,10 +33,16 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Lifecycle Hooks
+  //=============================================================
   ngOnInit(): void {
     this.loadPost();
   }
 
+  //=============================================================
+  //  Post Loading Methods
+  //=============================================================
   loadPost(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (!id) {
@@ -59,6 +65,9 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Comments Management Methods
+  //=============================================================
   loadComments(): void {
     if (this.post?.id) {
       this.commentService.getCommentsByPostId(this.post.id).subscribe({
@@ -71,6 +80,10 @@ export class PostDetailComponent implements OnInit {
       });
     }
   }
+
+  //=============================================================
+  //  Comment Submission Methods
+  //=============================================================
 
   submitComment(): void {
     if (this.commentForm.invalid || !this.post?.id) {
@@ -96,6 +109,9 @@ export class PostDetailComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Navigation Methods
+  //=============================================================
   goBack(): void {
     this.location.back();
   }

@@ -31,10 +31,16 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Lifecycle Hooks
+  //=============================================================
   ngOnInit(): void {
     this.loadTopics();
   }
 
+  //=============================================================
+  //  Topic Loading Methods
+  //=============================================================
   loadTopics(): void {
     this.isLoading = true;
     this.topicService.getSubscribedTopics().subscribe({
@@ -50,10 +56,16 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
+  //=============================================================
+  //  Navigation Methods
+  //=============================================================
   goBack(): void {
     this.location.back();
   }
 
+  //=============================================================
+  //  Form Submission Methods
+  //=============================================================
   onSubmit(): void {
     if (this.postForm.valid) {
       this.isLoading = true;

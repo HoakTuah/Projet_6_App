@@ -1,14 +1,17 @@
-<!-- Vue desktop -->
+<!-- SECTION: Desktop Navigation Bar -->
 <nav class="nav-bar desktop-nav">
     <div class="nav-content">
+      <!-- SECTION: Logo -->
       <div class="nav-logo">
         <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
       </div>
+      <!-- SECTION: Navigation Links -->
       <div class="nav-links">
         <a class="logout-link" (click)="onLogout()">Se déconnecter</a>
         <a routerLink="articles" routerLinkActive="active">Articles</a>
         <a routerLink="themes" routerLinkActive="active">Thèmes</a>
       </div>
+      <!-- SECTION: User Profile Icon -->
       <div class="user-icon">
         <mat-icon class="large-icon" (click)="navigateToProfile()">account_circle</mat-icon>
       </div>
@@ -16,7 +19,7 @@
   </nav>
   
   
-<!-- Vue mobile avec uniquement l'icône menu -->
+<!-- SECTION: Mobile Navigation Header -->
 <nav class="mobile-nav">
     <div class="nav-logo">
       <img src="/assets/logo_p6.png" alt="MDD Logo" class="logo">
@@ -27,20 +30,22 @@
   </nav>
 
   
-<!-- Menu latéral coulissant -->
+<!-- SECTION: Sliding Side Menu -->
 <div class="side-menu" [class.open]="isMenuOpen">
     <div class="menu-content">
+      <!-- SECTION: Menu Items -->
       <div class="menu-items">
         <a class="menu-item logout-link" (click)="onLogout()">Se déconnecter</a>
         <a routerLink="articles" routerLinkActive="active" (click)="closeMenu()">Articles</a>
         <a routerLink="themes" routerLinkActive="active" (click)="closeMenu()">Thèmes</a>
       </div>
+      <!-- SECTION: User Profile Icon in Side Menu -->
       <div class="user-icon">
         <mat-icon class="large-icon" (click)="navigateToProfile()">account_circle</mat-icon>
       </div>
     </div>
   </div>
   
-  <!-- Overlay sombre quand le menu est ouvert -->
+  <!-- SECTION: Dark Overlay for Mobile Menu -->
   <div class="menu-overlay" [class.visible]="isMenuOpen" (click)="toggleMenu()"></div>
   
