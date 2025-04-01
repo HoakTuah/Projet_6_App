@@ -5,24 +5,28 @@ import com.openclassrooms.mddapi.dto.request.CommentRequest;
 import com.openclassrooms.mddapi.entity.Comment;
 import com.openclassrooms.mddapi.entity.Post;
 import com.openclassrooms.mddapi.entity.User;
+import com.openclassrooms.mddapi.exceptions.PostNotFoundException;
 import com.openclassrooms.mddapi.mapper.CommentMapper;
 import com.openclassrooms.mddapi.repository.CommentRepository;
 import com.openclassrooms.mddapi.repository.PostRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Service class that handles comment-related operations.
- * Provides functionality for creating comments and retrieving comments for
- * posts.
- * Manages the relationship between users, posts, and comments.
+ * Service class that handles comment-related operations in the forum system.
+ * Provides comprehensive functionality for creating, retrieving, and managing
+ * comments.
+ * Manages the relationships between users, posts, and comments while ensuring
+ * data integrity
+ * and proper authorization.
  * 
  * @author Herry Khoalinh
  * @version 1.0
@@ -67,22 +71,22 @@ public class CommentService {
      * 
      * @param request The comment request containing post ID and content
      * @return The created comment as a DTO
-     * @throws RuntimeException        If the authenticated user cannot be found
-     * @throws EntityNotFoundException If the referenced post does not exist
+     * @throws UsernameNotFoundException if the authenticated user cannot be found
+     * @throws PostNotFoundException     if the referenced post does not exist
      */
 
     @Transactional
     public CommentDto createComment(CommentRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
         Post post = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+                .orElseThrow(() -> new PostNotFoundException("Article non trouvé"));
 
         Comment comment = new Comment();
-        comment.setPost(post);
         comment.setUser(user);
+        comment.setPost(post);
         comment.setContent(request.getContent());
         comment.setCommentedAt(LocalDateTime.now());
 
@@ -91,16 +95,23 @@ public class CommentService {
     }
 
     /**
-     * Retrieves all comments for a specific post, ordered by creation time
+     * Retrieves all comments for a specific post, ordered by publication date
      * (descending).
      * Returns the most recent comments first.
      * 
-     * @param postId The ID of the post to retrieve comments
-     * @return A list of comments for the post as DTOs
+     * @param postId The ID of the post to retrieve comments for
+     * @return List of comments as DTOs
+     * @throws PostNotFoundException if the post is not found with the given ID
      */
 
     public List<CommentDto> getPostComments(Integer postId) {
+        if (!postRepository.existsById(postId)) {
+            throw new PostNotFoundException("Article non trouvé");
+        }
+
         List<Comment> comments = commentRepository.findByPostIdOrderByCommentedAtDesc(postId);
-        return commentMapper.toDtoList(comments);
+        return comments.stream()
+                .map(commentMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

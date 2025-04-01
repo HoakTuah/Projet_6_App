@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", HttpStatus.NOT_FOUND.value());
         response.put("message", e.getMessage());
-        response.put("error", "User not found");
+        response.put("error", "L'utilisateur n'existe pas");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.NOT_FOUND.value());
         response.put("message", e.getMessage());
-        response.put("error", "User not found");
+        response.put("error", "L'utilisateur n'existe pas");
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.CONFLICT.value());
         response.put("message", e.getMessage());
-        response.put("error", "User already exists");
+        response.put("error", "L'utilisateur existe déjà");
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
@@ -47,8 +47,35 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("message", e.getMessage());
-        response.put("error", "Invalid password");
+        response.put("error", "Mot de passe invalide");
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(TopicNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleTopicNotFoundException(TopicNotFoundException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("message", e.getMessage());
+        response.put("error", "Le thème n'existe pas");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TopicSubscriptionException.class)
+    public ResponseEntity<Map<String, Object>> handleTopicSubscriptionException(TopicSubscriptionException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("message", e.getMessage());
+        response.put("error", "Erreur d'abonnement au thème");
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePostNotFoundException(PostNotFoundException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("message", e.getMessage());
+        response.put("error", "l'article n'existe pas");
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -61,7 +88,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", HttpStatus.BAD_REQUEST.value());
         response.put("errors", errors);
-        response.put("error", "Validation failed");
+        response.put("error", "Validation échouée");
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
@@ -70,7 +97,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleGlobalException(Exception e) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        response.put("message", "An unexpected error occurred");
+        response.put("message", "Une erreur inattendue s'est produite");
         response.put("error", e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

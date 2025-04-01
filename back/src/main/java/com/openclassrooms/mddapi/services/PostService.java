@@ -5,20 +5,34 @@ import com.openclassrooms.mddapi.dto.common.PostDto;
 import com.openclassrooms.mddapi.entity.Post;
 import com.openclassrooms.mddapi.entity.Topic;
 import com.openclassrooms.mddapi.entity.User;
+import com.openclassrooms.mddapi.exceptions.PostNotFoundException;
+import com.openclassrooms.mddapi.exceptions.TopicNotFoundException;
 import com.openclassrooms.mddapi.mapper.PostMapper;
 import com.openclassrooms.mddapi.repository.PostRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service class that handles post-related operations in the forum system.
+ * Provides comprehensive functionality for creating, retrieving, and managing
+ * posts.
+ * Manages the relationships between users, topics, and posts while ensuring
+ * data integrity
+ * and proper authorization.
+ * 
+ * @author Herry Khoalinh
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 public class PostService {
 
@@ -27,6 +41,14 @@ public class PostService {
     private final TopicRepository topicRepository;
     private final PostMapper postMapper;
 
+    /**
+     * Constructs a PostService with required dependencies.
+     * 
+     * @param postRepository  Repository for post data access operations
+     * @param userRepository  Repository for user data access operations
+     * @param topicRepository Repository for topic data access operations
+     * @param postMapper      Mapper for converting between Post entities and DTOs
+     */
     @Autowired
     public PostService(
             PostRepository postRepository,
@@ -41,20 +63,23 @@ public class PostService {
 
     /**
      * Creates a new post in the system.
-     *
-     * @param request The post creation request
+     * Associates the post with the current user and specified topic.
+     * Sets the publication timestamp and validates all required relationships.
+     * 
+     * @param request The post creation request containing title, content, and topic
+     *                ID
      * @return The created post as a DTO
-     * @throws EntityNotFoundException if the user or topic is not found
+     * @throws UsernameNotFoundException if the authenticated user cannot be found
+     * @throws TopicNotFoundException    if the referenced topic does not exist
      */
-
     @Transactional
     public PostDto createPost(PostRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
         Topic topic = topicRepository.findById(request.getTopicId())
-                .orElseThrow(() -> new EntityNotFoundException("Topic not found"));
+                .orElseThrow(() -> new TopicNotFoundException("Thème non trouvé"));
 
         Post post = new Post();
         post.setUser(user);
@@ -68,11 +93,12 @@ public class PostService {
     }
 
     /**
-     * Retrieves all posts from the system, ordered by publication date.
-     *
+     * Retrieves all posts from the system, ordered by publication date
+     * (descending).
+     * Returns the most recent posts first.
+     * 
      * @return List of posts as DTOs
      */
-
     public List<PostDto> getAllPosts() {
         List<Post> posts = postRepository.findAllByOrderByPublishedAtDesc();
         return posts.stream()
@@ -82,15 +108,14 @@ public class PostService {
 
     /**
      * Retrieves a specific post by its ID.
-     *
+     * 
      * @param id The ID of the post to retrieve
      * @return The post as a DTO
-     * @throws EntityNotFoundException if the post is not found
+     * @throws PostNotFoundException if the post is not found with the given ID
      */
-
     public PostDto getPostById(Integer id) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + id));
+                .orElseThrow(() -> new PostNotFoundException("Article non trouvé avec l'ID : " + id));
         return postMapper.toDto(post);
     }
 }

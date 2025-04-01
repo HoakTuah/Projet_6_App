@@ -28,9 +28,10 @@ import java.util.Optional;
 /**
  * Service class that handles user-related operations with security
  * implementation.
- * Provides functionality for user authentication, registration, and profile
- * management.
- * Implements UserDetailsService for Spring Security integration.
+ * Provides comprehensive functionality for user authentication, registration,
+ * profile management,
+ * and token handling. Implements UserDetailsService for Spring Security
+ * integration.
  * 
  * @author Herry Khoalinh
  * @version 1.0
@@ -48,10 +49,10 @@ public class UserService implements UserDetailsService {
      * Constructs a UserService with required dependencies.
      * 
      * @param userRepository  Repository for user data operations
-     * @param passwordEncoder Encoder for password hashing
+     * @param passwordEncoder Encoder for password hashing and verification
      * @param userMapper      Mapper for DTO conversions
+     * @param jwtService      Service for JWT token generation and management
      */
-
     @Autowired
     public UserService(
             UserRepository userRepository,
@@ -65,13 +66,14 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Loads a user by username for Spring Security authentication.
+     * Loads a user by username or email for Spring Security authentication.
+     * Supports both username and email-based authentication.
      * 
-     * @param username The username to search for
+     * @param username The username or email to search for
      * @return UserDetails object for Spring Security
-     * @throws UsernameNotFoundException if user not found
+     * @throws UsernameNotFoundException if user not found with the given
+     *                                   username/email
      */
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional;
@@ -82,7 +84,8 @@ public class UserService implements UserDetailsService {
         }
 
         User user = userOptional
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username/email: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "L'utilisateur n'existe pas avec le nom d'utilisateur/email: " + username));
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
@@ -91,14 +94,15 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * Authenticates a user and handles password encoding transition.
+     * Authenticates a user and generates a JWT token.
      * Supports both email and username login.
-     * Automatically upgrades plain passwords to BCrypt encoding.
+     * Validates password and handles authentication errors.
      * 
      * @param loginRequest DTO containing login credentials
-     * @return LoginResponse with authentication result
+     * @return LoginResponse with authentication result and JWT token
+     * @throws UsernameNotFoundException if user not found
+     * @throws InvalidPasswordException  if password is incorrect
      */
-
     public LoginResponse login(LoginRequest loginRequest) {
         boolean isEmail = loginRequest.getUsername().contains("@");
 
@@ -118,11 +122,13 @@ public class UserService implements UserDetailsService {
     /**
      * Registers a new user with encoded password.
      * Validates username and email uniqueness.
+     * Performs password validation and encoding.
      * 
      * @param registerRequest DTO containing registration information
-     * @return RegisterResponse with registration result
+     * @return RegisterResponse with registration result and JWT token
+     * @throws UserAlreadyExistsException if email or username is already taken
+     * @throws InvalidPasswordException   if password validation fails
      */
-
     public RegisterResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             throw new UserAlreadyExistsException("Email déjà enregistré");
@@ -153,11 +159,15 @@ public class UserService implements UserDetailsService {
     /**
      * Updates a user's profile information.
      * Handles username, email, and password updates with validation.
-     * Ensures password is properly encoded.
+     * Generates new token if email is changed.
      * 
      * @param userId        The ID of the user to update
      * @param updateRequest DTO containing update information
-     * @return UpdateProfileResponse with update result
+     * @return UpdateProfileResponse with update result and new token if email
+     *         changed
+     * @throws UserNotFoundException      if user not found
+     * @throws UserAlreadyExistsException if new email/username is already taken
+     * @throws InvalidPasswordException   if new password validation fails
      */
     public UpdateProfileResponse updateProfile(Integer userId, UpdateProfileRequest updateRequest) {
         User user = userRepository.findById(userId)
@@ -218,6 +228,16 @@ public class UserService implements UserDetailsService {
 
         return userMapper.toUpdateProfileResponse(updatedUser, "Profil mis à jour avec succès", true, null);
     }
+
+    /**
+     * Refreshes the JWT token for the current user.
+     * Used when user information changes (e.g., email update).
+     * 
+     * @param loginRequest DTO containing login information (not used, kept for API
+     *                     consistency)
+     * @return LoginResponse with new JWT token
+     * @throws UsernameNotFoundException if current user is not found
+     */
 
     public LoginResponse refreshToken(LoginRequest loginRequest) {
         // Get current authenticated user's email

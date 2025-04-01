@@ -3,11 +3,14 @@ package com.openclassrooms.mddapi.services;
 import com.openclassrooms.mddapi.dto.response.TopicResponse;
 import com.openclassrooms.mddapi.entity.Topic;
 import com.openclassrooms.mddapi.entity.User;
+import com.openclassrooms.mddapi.exceptions.TopicNotFoundException;
+import com.openclassrooms.mddapi.exceptions.TopicSubscriptionException;
 import com.openclassrooms.mddapi.mapper.TopicMapper;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
@@ -16,8 +19,10 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 /**
- * Service class for managing Topic entities.
- * Provides business logic for topic operations.
+ * Service class for managing Topic entities and their subscriptions.
+ * Provides business logic for topic operations including retrieval,
+ * subscription management,
+ * and user-topic relationship handling.
  *
  * @author Herry Khoalinh
  * @version 1.0
@@ -30,6 +35,13 @@ public class TopicService {
     private final UserRepository userRepository;
     private final TopicMapper topicMapper;
 
+    /**
+     * Constructs a TopicService with required dependencies.
+     *
+     * @param topicRepository Repository for topic data operations
+     * @param userRepository  Repository for user data operations
+     * @param topicMapper     Mapper for DTO conversions
+     */
     @Autowired
     public TopicService(TopicRepository topicRepository,
             UserRepository userRepository,
@@ -39,6 +51,11 @@ public class TopicService {
         this.topicMapper = topicMapper;
     }
 
+    /**
+     * Retrieves all topics ordered by creation date in descending order.
+     *
+     * @return List of TopicResponse objects representing all topics
+     */
     public List<TopicResponse> getAllTopics() {
         List<Topic> topics = topicRepository.findAllByOrderByCreatedAtDesc();
         return topics.stream()
@@ -46,17 +63,27 @@ public class TopicService {
                 .toList();
     }
 
+    /**
+     * Subscribes the current user to a specific topic.
+     * Handles validation to prevent duplicate subscriptions.
+     *
+     * @param topicId The ID of the topic to subscribe to
+     * @return TopicResponse containing the updated topic information
+     * @throws UsernameNotFoundException  if the current user is not found
+     * @throws TopicNotFoundException     if the topic is not found
+     * @throws TopicSubscriptionException if the user is already subscribed
+     */
     @Transactional
     public TopicResponse subscribeTopic(Integer topicId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new RuntimeException("Topic not found"));
+                .orElseThrow(() -> new TopicNotFoundException("thème non trouvé avec l'ID : " + topicId));
 
         if (topic.hasSubscription(user)) {
-            return topicMapper.toResponse(topic, "Already subscribed to this topic", false);
+            throw new TopicSubscriptionException("Vous êtes déjà abonné à ce thème");
         }
 
         // Add subscription
@@ -66,20 +93,30 @@ public class TopicService {
         // Force refresh from database to get updated subscriber count
         topic = topicRepository.findById(topicId).get();
 
-        return topicMapper.toResponse(topic, "Successfully subscribed to topic", true);
+        return topicMapper.toResponse(topic, "Abonnement au thème réussi", true);
     }
 
+    /**
+     * Unsubscribes the current user from a specific topic.
+     * Handles validation to ensure the user is subscribed before unsubscribing.
+     *
+     * @param topicId The ID of the topic to unsubscribe from
+     * @return TopicResponse containing the updated topic information
+     * @throws UsernameNotFoundException  if the current user is not found
+     * @throws TopicNotFoundException     if the topic is not found
+     * @throws TopicSubscriptionException if the user is not subscribed
+     */
     @Transactional
     public TopicResponse unsubscribeTopic(Integer topicId) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
         Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new RuntimeException("Topic not found"));
+                .orElseThrow(() -> new TopicNotFoundException("thème non trouvé avec l'ID : " + topicId));
 
         if (!topic.hasSubscription(user)) {
-            return topicMapper.toResponse(topic, "Not subscribed to this topic", false);
+            throw new TopicSubscriptionException("Vous n'êtes pas abonné à ce thème");
         }
 
         // Remove subscription
@@ -89,22 +126,24 @@ public class TopicService {
         // Force refresh from database to get updated subscriber count
         topic = topicRepository.findById(topicId).get();
 
-        return topicMapper.toResponse(topic, "Successfully unsubscribed from topic", true);
+        return topicMapper.toResponse(topic, "Désabonnement du thème réussi", true);
     }
 
+    /**
+     * Retrieves all topics subscribed by the current user.
+     *
+     * @return List of TopicResponse objects representing subscribed topics
+     * @throws UsernameNotFoundException if the current user is not found
+     */
     public List<TopicResponse> getSubscribedTopics() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Add debug logging
-        System.out.println("Getting subscribed topics for user: " + email);
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
         Set<Topic> subscribedTopics = user.getSubscribedTopics();
-        System.out.println("Found " + subscribedTopics.size() + " subscribed topics");
 
         return subscribedTopics.stream()
-                .map(topic -> topicMapper.toResponse(topic, "Topic found", true))
+                .map(topic -> topicMapper.toResponse(topic, "Thème trouvé", true))
                 .collect(Collectors.toList());
     }
 }
