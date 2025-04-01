@@ -4,6 +4,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a post in the system.
+ * A post is a user's contribution to a topic, containing a title and content.
+ * Each post belongs to a specific topic and is authored by a user.
+ * 
+ * Features:
+ * <ul>
+ * <li>Post content management</li>
+ * <li>Association with topics and users</li>
+ * <li>Timestamp tracking</li>
+ * </ul>
+ *
+ * @author Herry Khoalinh
+ * @version 1.0
+ * @since 1.0
+ */
 @Entity
 @Data
 @Table(name = "posts")

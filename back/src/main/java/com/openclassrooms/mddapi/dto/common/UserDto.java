@@ -16,29 +16,10 @@ import java.util.Set;
 
 public class UserDto {
 
-    /**
-     * Unique numerical identifier for the user within the system.
-     */
     private Integer id;
-
-    /**
-     * Unique display name chosen by the user for identification and login purposes.
-     */
     private String username;
-
-    /**
-     * User's contact email address used for communication and account verification.
-     */
     private String email;
-
-    /**
-     * Date and time when the user account was created.
-     */
     private LocalDateTime createdAt;
-
-    /**
-     * Set of topics that the user has subscribed to.
-     */
     private Set<Topic> subscribedTopics;
 
     // ===============================================

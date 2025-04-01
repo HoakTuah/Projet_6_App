@@ -7,6 +7,20 @@ import lombok.Data;
 /**
  * Data Transfer Object for creating a new post.
  * Contains the necessary information to create a post in the system.
+ * 
+ * Features:
+ * <ul>
+ * <li>Topic association validation</li>
+ * <li>Title and content validation</li>
+ * <li>Automatic timestamp generation</li>
+ * </ul>
+ * 
+ * Usage:
+ * <ul>
+ * <li>Used in post creation endpoints</li>
+ * <li>Validates post data before processing</li>
+ * <li>Ensures proper topic association</li>
+ * </ul>
  *
  * @author Herry Khoalinh
  * @version 1.0

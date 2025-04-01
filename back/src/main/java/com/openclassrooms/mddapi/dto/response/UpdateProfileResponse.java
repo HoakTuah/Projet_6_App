@@ -7,6 +7,21 @@ import lombok.Data;
  * Data Transfer Object for profile update operation responses.
  * Contains information about the update result and user details.
  * 
+ * Features:
+ * <ul>
+ * <li>Complete user profile information</li>
+ * <li>Operation status tracking</li>
+ * <li>Token management for email changes</li>
+ * <li>Detailed feedback messages</li>
+ * </ul>
+ * 
+ * Usage:
+ * <ul>
+ * <li>Used in profile update API responses</li>
+ * <li>Provides operation feedback to clients</li>
+ * <li>Handles token refresh for email changes</li>
+ * </ul>
+ *
  * @author Herry Khoalinh
  * @version 1.0
  * @since 1.0

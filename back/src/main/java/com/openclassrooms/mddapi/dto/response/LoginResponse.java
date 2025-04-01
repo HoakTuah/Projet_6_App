@@ -10,6 +10,21 @@ import java.util.Set;
  * Contains information about the authentication result and user details
  * if the login was successful.
  * 
+ * Features:
+ * <ul>
+ * <li>Complete user authentication information</li>
+ * <li>JWT token generation</li>
+ * <li>User preferences and subscriptions</li>
+ * <li>Detailed feedback messages</li>
+ * </ul>
+ * 
+ * Usage:
+ * <ul>
+ * <li>Used in authentication endpoints</li>
+ * <li>Provides session initialization data</li>
+ * <li>Enables user preference loading</li>
+ * </ul>
+ *
  * @author Herry Khoalinh
  * @version 1.0
  * @since 1.0

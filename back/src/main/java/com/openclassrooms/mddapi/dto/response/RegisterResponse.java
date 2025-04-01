@@ -9,6 +9,21 @@ import lombok.NoArgsConstructor;
  * Contains information about the registration result and user details
  * if the registration was successful.
  * 
+ * Features:
+ * <ul>
+ * <li>Complete user registration information</li>
+ * <li>JWT token generation</li>
+ * <li>Account initialization data</li>
+ * <li>Detailed feedback messages</li>
+ * </ul>
+ * 
+ * Usage:
+ * <ul>
+ * <li>Used in registration endpoints</li>
+ * <li>Provides initial session data</li>
+ * <li>Enables immediate user access</li>
+ * </ul>
+ *
  * @author Herry Khoalinh
  * @version 1.0
  * @since 1.0
