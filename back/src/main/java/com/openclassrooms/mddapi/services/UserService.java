@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.openclassrooms.mddapi.Security.JwtService;
 import com.openclassrooms.mddapi.Security.PasswordValidator;
+import com.openclassrooms.mddapi.exceptions.UserAlreadyExistsException;
+import com.openclassrooms.mddapi.exceptions.InvalidPasswordException;
+import com.openclassrooms.mddapi.exceptions.UserNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -99,25 +102,17 @@ public class UserService implements UserDetailsService {
     public LoginResponse login(LoginRequest loginRequest) {
         boolean isEmail = loginRequest.getUsername().contains("@");
 
-        Optional<User> userOptional;
-        if (isEmail) {
-            userOptional = userRepository.findByEmail(loginRequest.getUsername());
-        } else {
-            userOptional = userRepository.findByUsername(loginRequest.getUsername());
-        }
+        User user = (isEmail ? userRepository.findByEmail(loginRequest.getUsername())
+                : userRepository.findByUsername(loginRequest.getUsername()))
+                .orElseThrow(() -> new UsernameNotFoundException("L'utilisateur n'existe pas"));
 
-        if (userOptional.isEmpty()) {
-            return userMapper.toLoginResponse(null, null, "Invalid credentials", false);
-        }
-
-        User user = userOptional.get();
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            return userMapper.toLoginResponse(null, null, "Invalid credentials", false);
+            throw new InvalidPasswordException("Mot de passe incorrect");
         }
 
         UserDetails userDetails = loadUserByUsername(user.getUsername());
         String token = jwtService.generateToken(userDetails);
-        return userMapper.toLoginResponse(user, token, "Login successful", true);
+        return userMapper.toLoginResponse(user, token, "Connexion réussie", true);
     }
 
     /**
@@ -130,16 +125,16 @@ public class UserService implements UserDetailsService {
 
     public RegisterResponse register(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return userMapper.toRegisterResponse(null, null, "Email already registered", false);
+            throw new UserAlreadyExistsException("Email déjà enregistré");
         }
 
         if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return userMapper.toRegisterResponse(null, null, "Username already taken", false);
+            throw new UserAlreadyExistsException("Nom d'utilisateur déjà pris");
         }
 
         String validationError = PasswordValidator.validate(registerRequest.getPassword());
         if (validationError != null) {
-            return userMapper.toRegisterResponse(null, null, validationError, false);
+            throw new InvalidPasswordException(validationError);
         }
 
         User user = new User();
@@ -152,7 +147,7 @@ public class UserService implements UserDetailsService {
         UserDetails userDetails = loadUserByUsername(savedUser.getUsername());
         String token = jwtService.generateToken(userDetails);
 
-        return userMapper.toRegisterResponse(savedUser, token, "Registration successful", true);
+        return userMapper.toRegisterResponse(savedUser, token, "Inscription réussie", true);
     }
 
     /**
@@ -165,13 +160,9 @@ public class UserService implements UserDetailsService {
      * @return UpdateProfileResponse with update result
      */
     public UpdateProfileResponse updateProfile(Integer userId, UpdateProfileRequest updateRequest) {
-        Optional<User> userOptional = userRepository.findById(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("L'utilisateur n'existe pas avec l'id: " + userId));
 
-        if (userOptional.isEmpty()) {
-            return userMapper.toUpdateProfileResponse(null, "User not found", false, null);
-        }
-
-        User user = userOptional.get();
         boolean changes = false;
         String oldEmail = user.getEmail();
         boolean emailChanged = false;
@@ -180,8 +171,7 @@ public class UserService implements UserDetailsService {
         if (updateRequest.getEmail() != null && !updateRequest.getEmail().isEmpty()) {
             if (!updateRequest.getEmail().equals(oldEmail)) {
                 if (userRepository.existsByEmail(updateRequest.getEmail())) {
-                    return userMapper.toUpdateProfileResponse(user, "Email already in use by another user", false,
-                            null);
+                    throw new UserAlreadyExistsException("Email déjà utilisé par un autre utilisateur");
                 }
                 user.setEmail(updateRequest.getEmail());
                 changes = true;
@@ -193,8 +183,7 @@ public class UserService implements UserDetailsService {
         if (updateRequest.getUsername() != null && !updateRequest.getUsername().isEmpty()) {
             if (!updateRequest.getUsername().equals(user.getUsername())) {
                 if (userRepository.existsByUsername(updateRequest.getUsername())) {
-                    return userMapper.toUpdateProfileResponse(user, "Username already in use by another user", false,
-                            null);
+                    throw new UserAlreadyExistsException("Nom d'utilisateur déjà utilisé par un autre utilisateur");
                 }
                 user.setUsername(updateRequest.getUsername());
                 changes = true;
@@ -205,16 +194,16 @@ public class UserService implements UserDetailsService {
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
             String validationError = PasswordValidator.validate(updateRequest.getPassword());
             if (validationError != null) {
-                return userMapper.toUpdateProfileResponse(user, validationError, false, null);
+                throw new InvalidPasswordException(validationError);
             }
-
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
             changes = true;
         }
 
-        // If no changes were made, return a message
+        // If no changes were made, return current state
         if (!changes) {
-            return userMapper.toUpdateProfileResponse(user, "No changes were made to the profile", true, null);
+            return userMapper.toUpdateProfileResponse(user, "Aucune modification n'a été faite sur le profil", true,
+                    null);
         }
 
         // Save the updated user
@@ -224,25 +213,23 @@ public class UserService implements UserDetailsService {
         if (emailChanged) {
             UserDetails userDetails = loadUserByUsername(updatedUser.getUsername());
             String newToken = jwtService.generateToken(userDetails);
-            return userMapper.toUpdateProfileResponse(updatedUser, "Profile updated successfully", true, newToken);
+            return userMapper.toUpdateProfileResponse(updatedUser, "Profil mis à jour avec succès", true, newToken);
         }
 
-        return userMapper.toUpdateProfileResponse(updatedUser, "Profile updated successfully", true, null);
+        return userMapper.toUpdateProfileResponse(updatedUser, "Profil mis à jour avec succès", true, null);
     }
 
     public LoginResponse refreshToken(LoginRequest loginRequest) {
         // Get current authenticated user's email
         String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Optional<User> userOptional = userRepository.findByEmail(currentUserEmail);
-        if (userOptional.isEmpty()) {
-            return userMapper.toLoginResponse(null, null, "User not found", false);
-        }
+        User user = userRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "L'utilisateur n'existe pas avec l'email: " + currentUserEmail));
 
-        User user = userOptional.get();
         UserDetails userDetails = loadUserByUsername(user.getUsername());
         String newToken = jwtService.generateToken(userDetails);
 
-        return userMapper.toLoginResponse(user, newToken, "Token refreshed successfully", true);
+        return userMapper.toLoginResponse(user, newToken, "Token rafraîchi avec succès", true);
     }
 }

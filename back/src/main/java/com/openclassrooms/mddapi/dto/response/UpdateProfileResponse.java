@@ -31,7 +31,7 @@ public class UpdateProfileResponse {
     private String email;
 
     /**
-     * The JWT token for the user after the update.
+     * The JWT token for the user.
      * Only provided when email is changed.
      */
     private String token;

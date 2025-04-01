@@ -106,13 +106,13 @@ public class AuthController {
      * @param updateRequest DTO containing the fields to update
      * @return ResponseEntity with update result and appropriate HTTP status code
      */
-    @Operation(summary = "Update user profile", description = "Update a user's profile information (username, email, password)")
+    @Operation(summary = "Update user profile", description = "Update user information including email, username, and password")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Profile successfully updated", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Update failed", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request or duplicate email/username", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid or expired token", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class))),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = UpdateProfileResponse.class)))
     })
-
     @PutMapping("/users/{userId}")
     public ResponseEntity<UpdateProfileResponse> updateProfile(
             @PathVariable Integer userId,
@@ -123,6 +123,8 @@ public class AuthController {
         if (!response.isSuccess()) {
             if (response.getMessage().equals("User not found")) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            } else if (response.getMessage().contains("already in use")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
@@ -131,19 +133,31 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Refresh token", description = "Refresh authentication token after email change")
+    /**
+     * Refreshes the authentication token for the current user.
+     * Used when the user's email is changed and a new token is needed.
+     * 
+     * @param loginRequest DTO containing the user's credentials
+     * @return ResponseEntity with new token and appropriate HTTP status code
+     */
+    @Operation(summary = "Refresh authentication token", description = "Get a new token after email change or when current token is about to expire")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Token refreshed successfully", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Token refresh failed", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Token successfully refreshed", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - Invalid credentials", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
     })
     @PostMapping("/refresh-token")
     public ResponseEntity<LoginResponse> refreshToken(@RequestBody LoginRequest loginRequest) {
         LoginResponse response = userService.refreshToken(loginRequest);
 
-        if (response.isSuccess()) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        if (!response.isSuccess()) {
+            if (response.getMessage().equals("User not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
         }
+
+        return ResponseEntity.ok(response);
     }
 }
