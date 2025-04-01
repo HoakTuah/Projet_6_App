@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, of } from 'rxjs';
 import { RegisterRequest, RegisterResponse, User } from '../interfaces/Register.Interface';
 import { LoginRequest, LoginResponse } from '../interfaces/Login.Interface';
 import { environment } from '../../../../environments/environment';
@@ -50,6 +50,41 @@ export class AuthService {
 
           // Navigate to main page after successful login
           this.router.navigate(['/MDD/articles']);
+        }
+      })
+    );
+  }
+
+  //=============================================================
+  //  Refresh User Data
+  //=============================================================
+
+  refreshUserData(): Observable<any> {
+    const user = this.getCurrentUser();
+    if (!user) {
+      return of(null);
+    }
+
+    // Create a login request with the current user's email
+    const loginData: LoginRequest = {
+      username: user.email, // Use email as username
+      password: '' // This will be ignored since we have a valid token
+    };
+
+    // Call login endpoint with current token
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/auth/refresh-token`, loginData).pipe(
+      tap(response => {
+        if (response.success) {
+          localStorage.setItem('token', response.token);
+
+          const userData = {
+            id: response.userId,
+            username: response.username,
+            email: response.email,
+            subscribedTopics: response.subscribedTopics
+          };
+
+          localStorage.setItem('user', JSON.stringify(userData));
         }
       })
     );

@@ -6,11 +6,13 @@ import { TopicService } from '../../services/topic.service';
 import { ProfileService } from '../../services/profile.service'; 
 import { Topic } from '../../interfaces/Topic.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 interface UserResponse {
   id: number;
   username: string;
   email: string;
+  token?: string;
   [key: string]: any;
 }
 
@@ -65,29 +67,44 @@ export class ProfileComponent implements OnInit {
   //  Subscription Loading Methods
   //=============================================================
   loadSubscriptions(): void {
+    if (this.isLoadingSubscriptions) return; // Prevent multiple simultaneous calls
+    
     this.isLoadingSubscriptions = true;
     this.subscriptionError = '';
 
-    this.topicService.getSubscribedTopics().subscribe({
-      next: (topics: Topic[]) => {
-        this.subscriptions = topics;
-        this.isLoadingSubscriptions = false;
-      },
-      error: (error: HttpErrorResponse) => {
-        this.subscriptionError = 'Erreur lors du chargement des abonnements';
-        this.isLoadingSubscriptions = false;
-        console.error('Error loading subscriptions:', error);
-        
-        if (error.status === 401) {
-          this.router.navigate(['/auth/login']);
+    this.topicService.getSubscribedTopics()
+      .pipe(finalize(() => this.isLoadingSubscriptions = false))
+      .subscribe({
+        next: (topics: Topic[]) => {
+          this.subscriptions = topics;
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error loading subscriptions:', error);
+          if (error.status === 401) {
+            this.router.navigate(['/auth/login']);
+          } else {
+            this.subscriptionError = 'Erreur lors du chargement des abonnements';
+          }
         }
-      }
-    });
+      });
   }
 
   //=============================================================
   //  Profile Update Methods
   //=============================================================
+  private updateLocalStorage(userData: UserResponse, token?: string): void {
+
+    this.currentUser = {
+      ...this.currentUser,
+      ...userData
+    };
+    localStorage.setItem('user', JSON.stringify(this.currentUser));
+
+    if (token) {
+      localStorage.setItem('token', token);
+    }
+  }
+
   onSubmit(): void {
     if (this.profileForm.invalid) {
       return;
@@ -98,10 +115,12 @@ export class ProfileComponent implements OnInit {
     this.successMessage = '';
 
     const updateData: any = {};
+    const isEmailChange = this.profileForm.value.email !== this.currentUser.email;
+    
     if (this.profileForm.value.username !== this.currentUser.username) {
       updateData.username = this.profileForm.value.username;
     }
-    if (this.profileForm.value.email !== this.currentUser.email) {
+    if (isEmailChange) {
       updateData.email = this.profileForm.value.email;
     }
     if (this.profileForm.value.password) {
@@ -114,29 +133,30 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    this.profileService.updateProfile(this.currentUser.id, updateData).subscribe({
-      next: (response: UserResponse) => {
-        this.currentUser = {
-          ...this.currentUser,
-          ...response
-        };
-        localStorage.setItem('user', JSON.stringify(this.currentUser));
-        
-        this.successMessage = 'Profil mis à jour avec succès';
-        this.isLoading = false;
-        
-        this.profileForm.patchValue({ password: '' });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la mise à jour du profil';
-        console.error('Error updating profile:', error);
-        
-        if (error.status === 401) {
-          this.router.navigate(['/auth/login']);
+    this.profileService.updateProfile(this.currentUser.id, updateData)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.profileForm.patchValue({ password: '' });
+        })
+      )
+      .subscribe({
+        next: (response: UserResponse) => {
+          // Update local storage with new user data and token if provided
+          this.updateLocalStorage(response, response.token);
+          
+          this.successMessage = 'Profil mis à jour avec succès';
+          
+        },
+        error: (error: HttpErrorResponse) => {
+          this.errorMessage = error.error?.message || 'Une erreur est survenue lors de la mise à jour du profil';
+          console.error('Error updating profile:', error);
+          
+          if (error.status === 401) {
+            this.router.navigate(['/auth/login']);
+          }
         }
-      }
-    });
+      });
   }
 
   //=============================================================
