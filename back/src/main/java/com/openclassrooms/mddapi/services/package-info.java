@@ -1,8 +1,14 @@
 /**
- * This package contains service classes that implement business logic for the
- * application.
- * Services handle the application's business rules and act as an intermediary
- * layer between controllers and repositories.
+ * Services package containing business logic implementation.
+ * This package contains service classes that implement core business logic for
+ * the application.
+ * Services act as an intermediary layer between controllers and repositories,
+ * handling:
+ * - Business rules and validations
+ * - Transaction management
+ * - Data processing and transformation
+ * - Integration with external systems
+ * - Orchestration of complex operations
  * 
  * @author Herry Khoalinh
  * @version 1.0
