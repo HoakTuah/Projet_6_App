@@ -1,0 +1,11 @@
+.mdd-app-container {
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px; 
+  
+    @media (max-width: 768px) {
+      padding-top: 60px; 
+    }
+  }

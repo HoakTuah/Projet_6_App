@@ -1,0 +1,22 @@
+<!-- SECTION: Main Topic Container -->
+<div class="topic-container">
+  <!-- SECTION: Topics Grid -->
+  <div class="topic-grid" *ngIf="!isLoading && !errorMessage">
+    <!-- SECTION: No Topics Message -->
+    <div class="no-topics" *ngIf="topics.length === 0">
+      <p>Aucun thème disponible</p>
+    </div>
+
+    <!-- SECTION: Topic Card -->
+    <div class="topic-card" *ngFor="let topic of topics">
+      <h2>{{ topic.title }}</h2>
+      <p>{{ topic.content }}</p>
+      <button 
+        [class]="topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'"
+        (click)="subscribe(topic)"
+        [disabled]="topic.isSubscribed">
+        {{ topic.isSubscribed ? 'Déjà abonné' : "S'abonner" }}
+      </button>
+    </div>
+  </div>
+</div>

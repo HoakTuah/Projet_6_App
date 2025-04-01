@@ -1,0 +1,217 @@
+//=============================================================
+//  Profile Component Styles
+//=============================================================
+.profile-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+//=============================================================
+//  Profile Title Styles
+//=============================================================
+.profile-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+//=============================================================
+//  Profile Form Styles
+//=============================================================
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: 0 auto;
+  
+  input {
+    padding: 12px;
+    border: 1px solid #9747FF;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    
+    &:focus {
+      outline: none;
+      border-color: #7B68EE;
+    }
+  }
+  
+  .save-button {
+    background-color: #9747FF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    align-self: center;
+    width: 150px;
+    margin-top: 10px;
+    
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+//=============================================================
+//  Success & Error Message Styles
+//=============================================================
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+//=============================================================
+//  Subscriptions Section Styles
+//=============================================================
+.subscriptions-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+//=============================================================
+//  Section Title Styles
+//=============================================================
+.section-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+//=============================================================
+//  Topic Grid Styles
+//=============================================================
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+//=============================================================
+//  Topic Card Styles
+//=============================================================
+.topic-card {
+  background: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+
+  h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 0 0 20px;
+    color: #666;
+    font-size: 14px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #9747FF;
+    color: white;
+
+    &:hover {
+      background-color: darken(#9747FF, 10%);
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+  }
+}
+
+//=============================================================
+//  Loading & No Topics Styles
+//=============================================================
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.no-topics {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+//=============================================================
+//  Mobile Responsive Styles
+//=============================================================
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 10px;
+  }
+  
+  .profile-title, .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .profile-form {
+    gap: 12px;
+    
+    input {
+      padding: 10px;
+    }
+    
+    .save-button {
+      width: 100%;
+    }
+  }
+
+  .subscriptions-section {
+    padding: 0 10px;
+  }
+  
+  .topic-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .topic-card {
+    margin-bottom: 10px;
+  }
+
+  .divider {
+    margin: 30px auto;
+  }
+}

@@ -1,0 +1,40 @@
+<!-- SECTION: Main Container -->
+<div class="create-post-container">
+  <!-- SECTION: Header with Back Button -->
+  <div class="header">
+    <button class="back-button" (click)="$event.stopPropagation(); goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Créer un nouvel article</h1>
+  </div>
+
+  <!-- SECTION: Post Creation Form -->
+  <form [formGroup]="postForm" (ngSubmit)="onSubmit()" class="post-form">
+    <!-- SECTION: Theme Selection Dropdown -->
+    <select formControlName="topicId" placeholder="Sélectionner un thème">
+      <option value="" disabled selected>Sélectionner un thème</option>
+      <option *ngFor="let theme of themes" [value]="theme.id">{{ theme.title }}</option>
+    </select>
+
+    <!-- SECTION: Article Title Input -->
+    <input 
+      type="text" 
+      formControlName="title" 
+      placeholder="Titre de l'article">
+
+    <!-- SECTION: Article Content Textarea -->
+    <textarea 
+      formControlName="content" 
+      placeholder="Contenu de l'article" 
+      rows="8">
+    </textarea>
+
+    <!-- SECTION: Form Submit Button -->
+    <button 
+      type="submit" 
+      class="submit-button" 
+      [disabled]="!postForm.valid || isLoading">
+      {{ isLoading ? 'Création...' : 'Créer' }}
+    </button>
+  </form>
+</div>

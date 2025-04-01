@@ -1,0 +1,43 @@
+<!-- SECTION: Main Container -->
+<div class="main-content">
+  <!-- SECTION: Actions Bar -->   
+  <div class="actions-container">
+    
+    <button class="create-button" (click)="onCreatePost()">
+      Créer un article
+    </button>
+
+    <div class="sort-container">
+      <button mat-button [matMenuTriggerFor]="sortMenu">
+        Trier par
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #sortMenu="matMenu">
+        <button mat-menu-item (click)="sortPosts('date-desc')">Date (récent → ancien)</button>
+        <button mat-menu-item (click)="sortPosts('date-asc')">Date (ancien → récent)</button>
+        <button mat-menu-item (click)="sortPosts('title')">Titre</button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- SECTION: Posts Grid -->
+  <div class="posts-grid">
+    <!-- SECTION: Post Card -->
+    <div class="post-card" *ngFor="let post of posts" (click)="onPostClick(post.id)">
+      <h2>{{ post.title }}</h2>
+      <!-- SECTION: Post Metadata -->
+      <div class="post-meta">
+        <div class="meta-item">
+          <mat-icon>calendar_today</mat-icon>
+          <span>{{ post.publishedAt }}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>person</mat-icon>
+          <span>{{ post.username }}</span>
+        </div>
+      </div>
+      <!-- SECTION: Post Content Preview -->
+      <p class="post-content">{{ post.content }}</p>
+    </div>
+  </div>
+</div>

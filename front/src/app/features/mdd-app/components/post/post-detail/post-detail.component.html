@@ -1,0 +1,75 @@
+<!-- SECTION: Main Container -->
+<div class="post-detail-container">
+  <!-- SECTION: Header with Back Button -->
+  <div class="header-top">
+    <button class="back-button" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>{{ post?.title }}</h1>
+  </div>
+  
+ <!-- SECTION: Post Content -->
+  <div class="post-content" *ngIf="post && !isLoading && !errorMessage">
+    <div class="post-meta">
+      <div class="meta-item date-item">
+        <mat-icon>calendar_today</mat-icon>
+        <span>{{ post.publishedAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="meta-item author-item">
+        <mat-icon>person</mat-icon>
+        <span>{{ post.username }}</span>
+      </div>
+      <div class="meta-item">
+        <mat-icon>bookmark</mat-icon>
+        <span>{{ post.topicTitle || 'Sans thème' }}</span>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p>{{ post.content }}</p>
+    </div>
+
+    <div class="divider"></div>
+
+<!-- SECTION: Comments Section -->
+<div class="comments-section">
+  <h2>Commentaires</h2>
+  
+  <!-- SECTION: Comments List -->
+  <div class="comments-list" *ngIf="comments.length > 0">
+    <div class="comment-wrapper" *ngFor="let comment of comments">
+      <div class="comment-author">{{ comment.username }}</div>
+      <div class="comment-box">
+        <div class="comment-content">{{ comment.content }}</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="no-comments" *ngIf="comments.length === 0">
+    Aucun commentaire pour le moment.
+  </div>
+  
+  <!-- SECTION: Comment Form -->
+  <div class="comment-form-container">
+    <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+      <textarea 
+        formControlName="content" 
+        placeholder="Écrivez ici votre commentaire"
+        [class.invalid]="commentForm.get('content')?.invalid && commentForm.get('content')?.touched"
+      ></textarea>
+      
+      <button 
+        type="submit" 
+        class="submit-comment-btn" 
+        [disabled]="commentForm.invalid || isSubmittingComment"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </form>
+    
+     <!-- SECTION: Form Error Message -->
+    <div class="form-error" *ngIf="commentForm.get('content')?.invalid && commentForm.get('content')?.touched">
+      Le commentaire ne peut pas être vide et doit contenir moins de 500 caractères.
+    </div>
+  </div>
+</div>
