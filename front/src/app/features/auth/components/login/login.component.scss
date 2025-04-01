@@ -2,96 +2,101 @@
 //  Main Login Page Container
 //=============================================================
 .login-page {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  
-  @media (max-width: 600px) {
-    padding: 10px;
-  }
-}
-
-//=============================================================
-//  Header Section Styling
-//=============================================================
-.header {
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  flex-direction: column;
+  max-width: 800px;
+  margin: 0 auto;
   
-  .logo-container {
+  .header-section {
+    padding: 15px 15px;
+    border-bottom: 1px solid #EEEEEE;
+    
     .logo {
-      height: 40px;
+      height: 80px;
+      margin-left: -5px;
     }
   }
   
-  .back-button {
-    background: none;
-    border: none;
-    cursor: pointer;
+  .main-section {
+    padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     
-    mat-icon {
-      font-size: 24px;
-    }
-  }
-}
-
-//=============================================================
-//  Main Content Area Styling
-//=============================================================
-  .content {
-    padding: 20px 0;
-    
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
+    .title-row {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      position: relative;
+      width: 100%;
+      
+      .back-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        position: absolute;
+        left: -5px;
+        
+        mat-icon {
+          font-size: 24px;
+        }
+      }
+      
+      h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: normal;
+        flex: 1;
+        text-align: center;
+      }
     }
     
     .form-field {
       margin-bottom: 20px;
+      width: 320px;
       
       label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
         font-size: 14px;
+        color: #000;
       }
       
       input {
         width: 100%;
-        padding: 10px;
+        padding: 8px;
         border: 1px solid #ccc;
         border-radius: 4px;
         font-size: 16px;
         box-sizing: border-box;
-        transition: border-color 0.3s ease;
         
         &.invalid-input {
           border-color: #dc3545;
-          background-color: #fff8f8;
         }
       }
     
       .error-text {
         color: #dc3545;
         font-size: 12px;
-        margin-top: 5px;
-        animation: fadeIn 0.3s ease-in;
+        margin-top: 4px;
       }
     }
     
-    
     .submit-button {
-      width: 100%;
-      padding: 12px;
+      width: 200px;
+      padding: 10px;
       background-color: #7B68EE;
       color: white;
       border: none;
       border-radius: 4px;
       font-size: 16px;
       cursor: pointer;
+      margin-top: 10px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
       
       &:disabled {
         background-color: #cccccc;
@@ -99,24 +104,23 @@
       }
     }
   }
+}
 
 //=============================================================
 //  Message Styling
 //=============================================================
-  .error-message {
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .error-text {
-    color: #c62828;
-    font-size: 12px;
-    margin-top: 5px;
-  }
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.error-text {
+  color: #c62828;
+  font-size: 12px;
+  margin-top: 5px;
+}
 
 .success-message {
   background-color: #e8f5e9;
@@ -126,14 +130,93 @@
   margin-bottom: 20px;
   text-align: center;
 }
-  
+
 //=============================================================
 //  Responsive Styles
 //=============================================================
-  @media (max-width: 600px) {
-    .content {
-      h1 {
-        font-size: 20px;
+@media (max-width: 768px) {
+  .login-page {
+    max-width: 100%;
+    padding: 0;
+    min-height: 120vh;
+    
+    .header-section {
+      padding: 40px 16px 20px;
+      margin-bottom: 0;
+      position: relative;
+      border-bottom: none;
+      text-align: center;
+      
+      .logo {
+        height: 180px;
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+    }
+    
+    .main-section {
+      padding: 0 16px;
+      margin-top: 20px;
+      
+      .title-row {
+        margin: 16px 0 40px 0;
+        
+        .back-button {
+          position: fixed;
+          left: 16px;
+          top: 20px;
+          padding: 8px;
+          z-index: 10;
+          background: none;
+          border: none;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          mat-icon {
+            font-size: 28px;
+          }
+        }
+        
+        h1 {
+          display: block;
+          font-size: 24px;
+          text-align: center;
+          width: 100%;
+          margin-top: -30px;
+        }
+      }
+      
+      .form-field {
+        width: 100%;
+        max-width: 380px;
+        margin: 0 auto 30px auto;
+        
+        label {
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+        
+        input {
+          padding: 12px;
+          font-size: 16px;
+          border-radius: 4px;
+          height: 45px;
+        }
+      }
+      
+      .submit-button {
+        width: 140px;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 4px;
+        margin-top: 40px;
+        margin-bottom: 40px;
       }
     }
   }
+}

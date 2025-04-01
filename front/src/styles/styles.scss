@@ -1,4 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { 
+    height: 100%; 
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  /* Custom Scrollbar Styles - Only for mobile */
+  @media (max-width: 768px) {
+    html, body {
+      overflow-y: scroll !important;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+      position: fixed;
+      right: 0;
+      z-index: 9999;
+    }
+  
+  
+    body {
+      scroll-behavior: smooth;
+      overflow-y: scroll !important;
+    }
+  }
+  
+  
