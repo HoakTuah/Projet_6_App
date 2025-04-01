@@ -18,6 +18,17 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service class that handles comment-related operations.
+ * Provides functionality for creating comments and retrieving comments for
+ * posts.
+ * Manages the relationship between users, posts, and comments.
+ * 
+ * @author Herry Khoalinh
+ * @version 1.0
+ * @since 1.0
+ */
+
 @Service
 public class CommentService {
 
@@ -25,6 +36,16 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentMapper commentMapper;
+
+    /**
+     * Constructs a CommentService with required dependencies.
+     * 
+     * @param commentRepository Repository for comment data access operations
+     * @param postRepository    Repository for post data access operations
+     * @param userRepository    Repository for user data access operations
+     * @param commentMapper     Mapper for converting between Comment entities and
+     *                          DTOs
+     */
 
     @Autowired
     public CommentService(
@@ -37,6 +58,18 @@ public class CommentService {
         this.userRepository = userRepository;
         this.commentMapper = commentMapper;
     }
+
+    /**
+     * Creates a new comment for a post.
+     * Uses the currently authenticated user as the author of the comment.
+     * Sets the creation timestamp and associates the comment with the appropriate
+     * post.
+     * 
+     * @param request The comment request containing post ID and content
+     * @return The created comment as a DTO
+     * @throws RuntimeException        If the authenticated user cannot be found
+     * @throws EntityNotFoundException If the referenced post does not exist
+     */
 
     @Transactional
     public CommentDto createComment(CommentRequest request) {
@@ -56,6 +89,15 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toDto(savedComment);
     }
+
+    /**
+     * Retrieves all comments for a specific post, ordered by creation time
+     * (descending).
+     * Returns the most recent comments first.
+     * 
+     * @param postId The ID of the post to retrieve comments
+     * @return A list of comments for the post as DTOs
+     */
 
     public List<CommentDto> getPostComments(Integer postId) {
         List<Comment> comments = commentRepository.findByPostIdOrderByCommentedAtDesc(postId);

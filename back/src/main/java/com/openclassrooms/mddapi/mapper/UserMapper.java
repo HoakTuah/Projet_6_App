@@ -62,8 +62,9 @@ public interface UserMapper {
                         @Mapping(source = "user.id", target = "userId"),
                         @Mapping(source = "user.usernameDisplay", target = "username"),
                         @Mapping(source = "user.email", target = "email"),
+                        @Mapping(source = "token", target = "token"),
                         @Mapping(source = "message", target = "message"),
                         @Mapping(source = "success", target = "success")
         })
-        UpdateProfileResponse toUpdateProfileResponse(User user, String message, boolean success);
+        UpdateProfileResponse toUpdateProfileResponse(User user, String message, boolean success, String token);
 }

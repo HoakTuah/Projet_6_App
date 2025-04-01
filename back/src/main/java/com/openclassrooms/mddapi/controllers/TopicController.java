@@ -59,6 +59,7 @@ public class TopicController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully subscribed to topic"),
             @ApiResponse(responseCode = "404", description = "Topic not found"),
+            @ApiResponse(responseCode = "400", description = "Already subscribed to topic"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -77,6 +78,7 @@ public class TopicController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully unsubscribed from topic"),
             @ApiResponse(responseCode = "404", description = "Topic not found"),
+            @ApiResponse(responseCode = "400", description = "Not subscribed to topic"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -98,7 +100,7 @@ public class TopicController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/subscribed")
-    public List<TopicResponse> getSubscribedTopics() {
-        return topicService.getSubscribedTopics();
+    public ResponseEntity<List<TopicResponse>> getSubscribedTopics() {
+        return ResponseEntity.ok(topicService.getSubscribedTopics());
     }
 }

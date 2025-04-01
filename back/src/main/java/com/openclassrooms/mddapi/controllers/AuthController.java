@@ -88,7 +88,6 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Registration failed", content = @Content(schema = @Schema(implementation = RegisterResponse.class)))
     })
     @PostMapping("/register")
-
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
         RegisterResponse response = userService.register(registerRequest);
 
@@ -130,5 +129,21 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Refresh token", description = "Refresh authentication token after email change")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Token refreshed successfully", content = @Content(schema = @Schema(implementation = LoginResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Token refresh failed", content = @Content(schema = @Schema(implementation = LoginResponse.class)))
+    })
+    @PostMapping("/refresh-token")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestBody LoginRequest loginRequest) {
+        LoginResponse response = userService.refreshToken(loginRequest);
+
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 }

@@ -31,6 +31,12 @@ public class UpdateProfileResponse {
     private String email;
 
     /**
+     * The JWT token for the user after the update.
+     * Only provided when email is changed.
+     */
+    private String token;
+
+    /**
      * A message describing the result of the update attempt.
      * Examples: "Profile updated successfully", "Email already in use"
      */

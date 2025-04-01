@@ -46,6 +46,7 @@ public class PostService {
      * @return The created post as a DTO
      * @throws EntityNotFoundException if the user or topic is not found
      */
+
     @Transactional
     public PostDto createPost(PostRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -71,6 +72,7 @@ public class PostService {
      *
      * @return List of posts as DTOs
      */
+
     public List<PostDto> getAllPosts() {
         List<Post> posts = postRepository.findAllByOrderByPublishedAtDesc();
         return posts.stream()
@@ -85,6 +87,7 @@ public class PostService {
      * @return The post as a DTO
      * @throws EntityNotFoundException if the post is not found
      */
+
     public PostDto getPostById(Integer id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + id));

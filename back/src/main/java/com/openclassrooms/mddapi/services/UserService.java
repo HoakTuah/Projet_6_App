@@ -10,6 +10,7 @@ import com.openclassrooms.mddapi.entity.User;
 import com.openclassrooms.mddapi.mapper.UserMapper;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -70,8 +71,15 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        Optional<User> userOptional;
+        if (username.contains("@")) {
+            userOptional = userRepository.findByEmail(username);
+        } else {
+            userOptional = userRepository.findByUsername(username);
+        }
+
+        User user = userOptional
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username/email: " + username));
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
@@ -98,29 +106,18 @@ public class UserService implements UserDetailsService {
             userOptional = userRepository.findByUsername(loginRequest.getUsername());
         }
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-
-            // Check if the stored password is BCrypt encoded
-            if (!user.getPassword().startsWith("$2a$")) {
-                // If not encoded, compare directly first
-                if (user.getPassword().equals(loginRequest.getPassword())) {
-                    // If match, update to BCrypt encoded password
-                    user.setPassword(passwordEncoder.encode(loginRequest.getPassword()));
-                    user = userRepository.save(user);
-                    String jwtToken = jwtService.generateToken(user);
-                    return userMapper.toLoginResponse(user, jwtToken, "Login successful", true);
-                }
-            } else {
-                // If already BCrypt encoded, use matches
-                if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                    String jwtToken = jwtService.generateToken(user);
-                    return userMapper.toLoginResponse(user, jwtToken, "Login successful", true);
-                }
-            }
-            return userMapper.toLoginResponse(null, null, "Invalid password", false);
+        if (userOptional.isEmpty()) {
+            return userMapper.toLoginResponse(null, null, "Invalid credentials", false);
         }
-        return userMapper.toLoginResponse(null, null, "User not found", false);
+
+        User user = userOptional.get();
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            return userMapper.toLoginResponse(null, null, "Invalid credentials", false);
+        }
+
+        UserDetails userDetails = loadUserByUsername(user.getUsername());
+        String token = jwtService.generateToken(userDetails);
+        return userMapper.toLoginResponse(user, token, "Login successful", true);
     }
 
     /**
@@ -132,32 +129,30 @@ public class UserService implements UserDetailsService {
      */
 
     public RegisterResponse register(RegisterRequest registerRequest) {
-        // Check if username already exists
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return userMapper.toRegisterResponse(null, null, "Username already exists", false);
-        }
-
-        // Check if email already exists
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            return userMapper.toRegisterResponse(null, null, "Email already exists", false);
+            return userMapper.toRegisterResponse(null, null, "Email already registered", false);
         }
 
-        // Validate password strength
+        if (userRepository.existsByUsername(registerRequest.getUsername())) {
+            return userMapper.toRegisterResponse(null, null, "Username already taken", false);
+        }
+
         String validationError = PasswordValidator.validate(registerRequest.getPassword());
         if (validationError != null) {
             return userMapper.toRegisterResponse(null, null, validationError, false);
         }
 
-        // Create new user with encoded password
-        User newUser = userMapper.toUser(registerRequest);
-        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        newUser.setCreatedAt(LocalDateTime.now());
+        User user = new User();
+        user.setEmail(registerRequest.getEmail());
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setCreatedAt(LocalDateTime.now());
 
-        // Save user to database
-        User savedUser = userRepository.save(newUser);
+        User savedUser = userRepository.save(user);
+        UserDetails userDetails = loadUserByUsername(savedUser.getUsername());
+        String token = jwtService.generateToken(userDetails);
 
-        String jwtToken = jwtService.generateToken(savedUser);
-        return userMapper.toRegisterResponse(savedUser, jwtToken, "Registration successful", true);
+        return userMapper.toRegisterResponse(savedUser, token, "Registration successful", true);
     }
 
     /**
@@ -173,20 +168,24 @@ public class UserService implements UserDetailsService {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
-            return userMapper.toUpdateProfileResponse(null, "User not found", false);
+            return userMapper.toUpdateProfileResponse(null, "User not found", false, null);
         }
 
         User user = userOptional.get();
         boolean changes = false;
+        String oldEmail = user.getEmail();
+        boolean emailChanged = false;
 
         // Check and update email if provided
         if (updateRequest.getEmail() != null && !updateRequest.getEmail().isEmpty()) {
-            if (!updateRequest.getEmail().equals(user.getEmail())) {
+            if (!updateRequest.getEmail().equals(oldEmail)) {
                 if (userRepository.existsByEmail(updateRequest.getEmail())) {
-                    return userMapper.toUpdateProfileResponse(user, "Email already in use by another user", false);
+                    return userMapper.toUpdateProfileResponse(user, "Email already in use by another user", false,
+                            null);
                 }
                 user.setEmail(updateRequest.getEmail());
                 changes = true;
+                emailChanged = true;
             }
         }
 
@@ -194,7 +193,8 @@ public class UserService implements UserDetailsService {
         if (updateRequest.getUsername() != null && !updateRequest.getUsername().isEmpty()) {
             if (!updateRequest.getUsername().equals(user.getUsername())) {
                 if (userRepository.existsByUsername(updateRequest.getUsername())) {
-                    return userMapper.toUpdateProfileResponse(user, "Username already in use by another user", false);
+                    return userMapper.toUpdateProfileResponse(user, "Username already in use by another user", false,
+                            null);
                 }
                 user.setUsername(updateRequest.getUsername());
                 changes = true;
@@ -203,10 +203,9 @@ public class UserService implements UserDetailsService {
 
         // Check and update password if provided
         if (updateRequest.getPassword() != null && !updateRequest.getPassword().isEmpty()) {
-            // Validate password strength
             String validationError = PasswordValidator.validate(updateRequest.getPassword());
             if (validationError != null) {
-                return userMapper.toUpdateProfileResponse(user, validationError, false);
+                return userMapper.toUpdateProfileResponse(user, validationError, false, null);
             }
 
             user.setPassword(passwordEncoder.encode(updateRequest.getPassword()));
@@ -215,12 +214,35 @@ public class UserService implements UserDetailsService {
 
         // If no changes were made, return a message
         if (!changes) {
-            return userMapper.toUpdateProfileResponse(user, "No changes were made to the profile", true);
+            return userMapper.toUpdateProfileResponse(user, "No changes were made to the profile", true, null);
         }
 
         // Save the updated user
         User updatedUser = userRepository.save(user);
 
-        return userMapper.toUpdateProfileResponse(updatedUser, "Profile updated successfully", true);
+        // If email changed, generate new token
+        if (emailChanged) {
+            UserDetails userDetails = loadUserByUsername(updatedUser.getUsername());
+            String newToken = jwtService.generateToken(userDetails);
+            return userMapper.toUpdateProfileResponse(updatedUser, "Profile updated successfully", true, newToken);
+        }
+
+        return userMapper.toUpdateProfileResponse(updatedUser, "Profile updated successfully", true, null);
+    }
+
+    public LoginResponse refreshToken(LoginRequest loginRequest) {
+        // Get current authenticated user's email
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Optional<User> userOptional = userRepository.findByEmail(currentUserEmail);
+        if (userOptional.isEmpty()) {
+            return userMapper.toLoginResponse(null, null, "User not found", false);
+        }
+
+        User user = userOptional.get();
+        UserDetails userDetails = loadUserByUsername(user.getUsername());
+        String newToken = jwtService.generateToken(userDetails);
+
+        return userMapper.toLoginResponse(user, newToken, "Token refreshed successfully", true);
     }
 }
