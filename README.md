@@ -1,33 +1,119 @@
-# P6-Full-Stack-reseau-dev
+# P6 - MDD (Monde de Dév)
 
-## Front
+Welcome to MDD (Monde de Dev), our innovative solution: the next-generation social network dedicated to developers.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+Our goal is to connect developers seeking job opportunities by facilitating networking and emphasizing collaboration between people with shared interests.
 
-Don't forget to install your node_modules before starting (`npm install`).
+## Prerequisites
 
-### Development server
+### Front-End
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Angular | Version : 14.1.0
+- Angular Material | Version : 14.2.5
+- Node.js and npm | Version : 22.11.0
 
-### Build
+ ### Back-End
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+ - Java | 17
+ - Spring Boot | Version : 3.1.5
+ - Maven | Version : (Inherited from Spring Boot parent)
+ - Spring Data JPA | Version : (Inherited from Spring Boot parent)
+ - SpringDoc Open API | Version : 2.2.0
 
-### Where to start
+ ### Database
+- Mysql Version : 8.0.33
 
-As you may have seen if you already started the app, a simple home page containing a logo, a title and a button is available. If you take a look at its code (in the `home.component.html`) you will see that an external UI library is already configured in the project.
+## Project Structure
 
-This library is `@angular/material`, it's one of the most famous in the angular ecosystem. As you can see on their docs (https://material.angular.io/), it contains a lot of highly customizable components that will help you design your interfaces quickly.
+The project is divided into two main parts:
+- `front/`: Angular frontend application
+- `back/`: Spring Boot backend application
 
-Note: I recommend to use material however it's not mandatory, if you prefer you can get rid of it.
+## Database Setup
 
-Good luck!
+### 1. Create MySQL Database and User
 
-JAVA 21
+1. Open MySQL Command Line Client or MySQL Workbench
 
-Generate Javadoc => mvn javadoc:javadoc
+2. Connect as root user:
+   ```sql
+   mysql -u root -p
+   ```
+3. Create the database:
+   ```sql
+   CREATE DATABASE mdd;
+   ```
+4. Create a new user and grant privileges:
+   ```sql
+   CREATE USER 'mdd_user'@'localhost' IDENTIFIED BY 'your_password';
+   GRANT ALL PRIVILEGES ON mdd_db.* TO 'mdd_user'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
+### 2. Execute SQL Script
 
-target/site/javadoc 
+1. Navigate to the SQL script location:
+   ```bash
+   cd back/src/main/resources
+   ```
+2. Execute the SQL script using MySQL client:
+   ```bash
+   mysql -u mdd_user -p mdd_db < data.sql
+   ```
 
-swagger link :=> http://localhost:8080/swagger-ui/index.html
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd front
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+ng serve
+```
+The application will be available at `http://localhost:4200`
+
+### Backend Setup
+
+1. Navigate to the backend directory:
+```bash
+cd back
+```
+
+2. Build the project:
+```bash
+mvn clean install
+```
+
+3. Run the application:
+```bash
+mvn spring-boot:run
+```
+
+The backend will be available at `http://localhost:8080`
+
+### API Documentation
+
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- Generate Javadoc: `mvn javadoc:javadoc`
+- Javadoc will be available in `target/site/javadoc`
+
+## Development Notes
+
+- The frontend uses Angular Material for UI components.
+- The backend uses JWT for authentication
+- The application uses MySQL as the database
+- MapStruct is configured for object mapping with Spring component model
+- Lombok is used to reduce boilerplate code
+
+## Additional Information
+
+- The project uses Spring Security for authentication and authorization
+- JWT tokens are used for secure communication between frontend and backend
+- The application follows RESTful API principles
+- Swagger UI is available for API documentation and testing
